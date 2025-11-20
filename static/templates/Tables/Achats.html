@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title %}<title>Achats</title>{% endblock %}
+{% block body %}
+<h1>page achat</h1>
+        {% for achat in achats %}
+            <tr>
+                <td>{{ achat['id_achat'] }}</td><td>{{ achat['montant_total'] }}</td><td>{{ achat['poids_total'] }}</td>
+                <td>{{ achat.id_achat }}</td>
+                <td>{{ achat.montant_total }}</td>
+                <td>{{ achat.poids_total }}</td>
+                <td>
+                      <a href="/etudiant/edit?id={{ etudiant.id }}">editer</a>
+                      <a href="/etudiant/delete?id={{ etudiant.id }}" >supprimer</a>
+                  </td>
+            </tr>
+        {% endfor %}
+{% endblock %}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block title %}
+    <title>S1 BDD Sujet 9 - Gestion Salles et Ordinateurs</title>
+    {% endblock %}
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    {% block stylesheet %}
+    <link type="text/css" rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/static/css/mes_styles.css">
+    {% endblock %}
+</head>
+<body>
+    <nav class="navbar-expand-lg navbar-dark navbar " id="Nav">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="/static/images/.png" alt="Logo" style="height: 50px;" >
+            </a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item me-2">
+                        <a class="btn btn-outline-success" href="/Achats/show">Achat</a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="btn btn-outline-success" href="/Achats-vetements/show">Achat-vetement</a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="btn btn-outline-success" href="/Depose/show">Depose</a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="btn btn-outline-success" href="/Categories-vetements/show">Categories-vetement</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% block body %}
+    <h1>Acceuil</h1>
+{% endblock %}
+</body>
+</html>
