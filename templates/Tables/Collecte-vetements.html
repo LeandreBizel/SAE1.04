@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}<title>Collecte-vetements</title>{% endblock %}
+{% block body %}
+<h1 style="text-align: center;font-size: 50px;margin: 20px;">Collecte vêtements</h1>
+    <a href="/Collecte-vetements/add" class="btn  btn-sm">Ajouter un achat</a>
+    <table class="table">
+            <tr>
+            <th>id</th><th>poid total</th><th>date d'achat</th>
+            </tr>
+            {% for Collectes in Collecte %}
+            <tr>
+                <td>{{ Collectes.id_collecte_vetement }}</td>
+                <td>{{ Collectes.date_collecte }}</td>
+                <td>{{ Collectes.quantite_vetement }}€</td>
+                <td>
+                      <a href="/Collecte-vetements/edit?id_collecte_vetement={{ Collectes.id_collecte_vetement }}" class="btn btn-warning btn-sm">editer</a>
+                      <a href="/Collecte-vetements/delete?id_collecte_vetement={{ Collectes.id_collecte_vetement }}" class="btn btn-danger btn-sm">supprimer</a>
+                </td>
+
+            </tr>
+            {% endfor %}
+            </table>
+
+{% endblock %}
