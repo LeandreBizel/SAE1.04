@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}
+<title>Achats modification</title>
+{% endblock %}
+{% block body %}
+    <div class="container mt-4">
+        <h1>Formulaire d'achat</h1>
+        <form action="/Achat/edit" method="post">
+            <input type="hidden" name="id_achat" value="{{ achat.id_achat }}" >
+            <div class="mb-3">
+                <label for="id_client" class="form-label">ID du client :</label>
+                <input type="number" class="form-control" id="id_client" name="id_client" value="{{ achat.id_client }}" placeholder="Entrez l'ID du client" required >
+            </div>
+            <div class="mb-3">
+                <label for="montant_total" class="form-label">Montant de l'achat :</label>
+                <input type="number" class="form-control" id="montant_total" name="montant_total" value="{{ achat.montant_total }}" placeholder="Entrez le montant de l'achat" required >
+            </div>
+            <div class="mb-3">
+                <label for="poids_total" class="form-label">Poid total :</label>
+                <input type="number" class="form-control" id="poids_total" name="poids_total" value="{{ achat.poids_total }}" placeholder="Entrez le poid total" required >
+            </div>
+            <div class="mb-3">
+                <label for="date_achat" class="form-label">date de l'achat :</label>
+                <input type="date" class="form-control" id="date_achat" name="date_achat" value="{{ achat.date_achat }}" placeholder="Entrez la date de l'achat" required >
+            </div>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,27 +1,40 @@
 {% extends "layout.html" %}
 
-{% block title %}<title>Achats</title>{% endblock %}
+{% block title %}
+<title>Achats</title>
+{% endblock %}
+{% block style %}
+    <link type="text/css" rel="stylesheet" href="/css/Achat_styles.css">
+{% endblock %}
 {% block body %}
 <h1 style="text-align: center;font-size: 50px;margin: 20px;">Table Achat</h1>
+<a href="/Achat/add" class="btn  btn-sm">Ajouter un achat</a>
+<table class="table table-hover table-bordered table-sm align-middle shadow-sm ">
+    <thead class="table-dark">
+        <tr class="text-center">
+            <th>ID</th>
+            <th>ID Client</th>
+            <th>Montant</th>
+            <th>Poids total</th>
+            <th>Date d'achat</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
 
-        <table class="table">
-            <tr>
-            <th>id</th><th>id client</th><th>montant</th><th>poid total</th><th>date d'achat</th>
-            </tr>
-            {% for Achat in Achats %}
-            <tr>
-                <td>{{ Achat.id_achat }}</td>
-                <td>{{ Achat.id_client }}</td>
-                <td>{{ Achat.montant_total }}€</td>
-                <td>{{ Achat.poids_total }}kg</td>
-                <td>{{ Achat.date_achat }}</td>
-                <td>
-                      <a href="" class="btn btn-warning btn-sm">editer</a>
-                      <a href="" class="btn btn-danger btn-sm">supprimer</a>
-                </td>
-
-            </tr>
-            {% endfor %}
-        </table>
-
+    <tbody>
+        {% for achat in achats %}
+        <tr>
+            <td class="text-center">{{ achat.id_achat }}</td>
+            <td class="text-center">{{ achat.id_client }}</td>
+            <td class="text-center fw-semibold">{{ achat.montant_total }}€</td>
+            <td class="text-center">{{ achat.poids_total }}kg</td>
+            <td class="text-center">{{ achat.date_achat }}</td>
+            <td class="text-center">
+                <a href="/Achat/edit?id_achat={{ achat.id_achat }}" class="btn btn-warning btn-sm me-1">Éditer</a>
+                <a href="/Achat/delete?id_achat={{ achat.id_achat }}" class="btn btn-danger btn-sm">Supprimer</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
