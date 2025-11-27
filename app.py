@@ -36,16 +36,47 @@ def show_achat():
     Achats = mycursor.fetchall()
     return render_template('Tables/Achats.html', Achats=Achats)
 
-@app.route('/Achats-vetements/show')
+app.route('/Achats-vetements/show')
 def show_achats_vetements():
+    sql = ''' SELECT * FROM ACHATS_VETEMENTS '''
+    return render_template('Tables/Achats-vetements.html')
+
+@app.route('/Achats-vetements/edit')
+def edit_achats_vetements():
+    return render_template('Tables/Achats-vetements.html')
+
+@app.route('/Achats-vetements/delete')
+def delete_achats_vetements():
+    return render_template('Tables/Achats-vetements.html')
+
+@app.route('/Achats-vetements/add')
+def add_achats_vetements():
     return render_template('Tables/Achats-vetements.html')
 
 @app.route('/Depose/show')
 def show_depose():
     return render_template('Tables/Depose.html')
-@app.route('/Categories-vetements/show')
-def show_categories_vetements():
-    return render_template('Tables/Categories-vetements.html')
+    
+@app.route('/Collecte-vetements/show')
+def show_collecte_vetements():
+    mycursor = get_db().cursor()
+    sql = ''' SELECT * FROM COLLECTE_VETEMENT '''
+    mycursor.execute(sql)
+    Collecte = mycursor.fetchall()
+    return render_template('Tables/Collecte-vetements.html', Collecte = Collecte)
+
+@app.route('/Collecte-vetements/delete')
+def delete_collecte_vetements():
+    return render_template('Tables/Collecte-vetements.html')
+
+@app.route('/Collecte-vetements/add_collecte-vetements')
+def add_collecte_vetements():
+    return render_template('Tables/Collecte-vetements.html')
+
+@app.route('/Collecte-vetements/edit-collecte-vetements')
+def edit():
+    return render_template('Tables/Collecte-vetements.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
+
