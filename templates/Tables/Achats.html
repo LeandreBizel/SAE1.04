@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}<title>Achats</title>{% endblock %}
+{% block body %}
+<h1 style="text-align: center;font-size: 50px;margin: 20px;">Table Achat</h1>
+
+        <table class="table">
+            <tr>
+            <th>id</th><th>id client</th><th>montant</th><th>poid total</th><th>date d'achat</th>
+            </tr>
+            {% for Achat in Achats %}
+            <tr>
+                <td>{{ Achat.id_achat }}</td>
+                <td>{{ Achat.id_client }}</td>
+                <td>{{ Achat.montant_total }}€</td>
+                <td>{{ Achat.poids_total }}kg</td>
+                <td>{{ Achat.date_achat }}</td>
+                <td>
+                      <a href="" class="btn btn-warning btn-sm">editer</a>
+                      <a href="" class="btn btn-danger btn-sm">supprimer</a>
+                </td>
+
+            </tr>
+            {% endfor %}
+        </table>
+
+{% endblock %}
