@@ -147,20 +147,65 @@ def show_collecte_vetements():
     Collecte = mycursor.fetchall()
     return render_template('Tables/Collecte-vetements.html', Collecte = Collecte)
 
-@app.route('/Collecte-vetements/delete')
+@app.route('/Collecte-vetements/delete', methods = ['GET'])
 def delete_collecte_vetements():
-    return render_template('Tables/Collecte-vetements.html')
+    mycursor = get_db().cursor()
+    id_collecte_vetement = request.args.get('id_collecte_vetement')
+    tuple_delete = (id_collecte_vetement,)
+    sql ="DELETE FROM COLLECTE_VETEMENT WHERE id_collecte_vetement = %s"
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+    flash('une collecte à été supprimé :' + id_collecte_vetement)
+    return redirect('/Collecte-vetements/show')
 
-@app.route('/Collecte-vetements/add_collecte-vetements')
+@app.route('/Collecte-vetements/add', methods=['GET'])
 def add_collecte_vetements():
-    return render_template('Tables/Collecte-vetements.html')
+    return render_template('Tables/Collecte-vetements_add.html')
 
-@app.route('/Collecte-vetements/edit-collecte-vetements')
-def edit():
-    return render_template('Tables/Collecte-vetements.html')
+
+@app.route('/Collecte-vetements/add', methods=['POST'])
+def valid_add_collecte_vetements():
+    print("Ajout d'une nouvelle collecte...")
+    quantite_vetement = request.form.get('quantite_vetement')
+    date_collecte = request.form.get('date_collecte')
+    id_collecte = request.form.get('id_collecte')
+    id_categorie_vetement = request.form.get('id_categorie_vetement')
+    print(f"quantité = {quantite_vetement}, date = {date_collecte}")
+    mycursor = get_db().cursor()
+    sql = """ INSERT INTO COLLECTE_VETEMENT (id_collecte,quantite_vetement, date_collecte,id_categorie_vetement) VALUES (%s, %s,%s,%s)"""
+    tuple_insert = (id_collecte, quantite_vetement, date_collecte,id_categorie_vetement)
+    mycursor.execute(sql, tuple_insert)
+    get_db().commit()
+    flash("Nouvelle collecte ajoutée avec succès !")
+    return redirect('/Collecte-vetements/show')
+
+@app.route('/Collecte-vetements/edit', methods=['GET'])
+def edit_collecte_vetements():
+    mycursor = get_db().cursor()
+    id_collecte_vetement = request.args.get('id_collecte_vetement')
+    sql = """SELECT * FROM COLLECTE_VETEMENT WHERE id_collecte_vetement = %s"""
+    mycursor.execute(sql, (id_collecte_vetement,))
+    Collecte = mycursor.fetchone()
+    return render_template('Tables/Collecte-vetements_edit.html', Collecte=Collecte)
+
+@app.route('/Collecte-vetements/edit', methods=['POST'])
+def valid_edit_collecte_vetements():
+    print("Modification d'une collecte...")
+    id_collecte_vetement = request.form.get('id_collecte_vetement')
+    quantite_vetement = request.form.get('quantite_vetement')
+    date_collecte = request.form.get('date_collecte')
+    print(f"id: {id_collecte_vetement}, quantité: {quantite_vetement}, date: {date_collecte}")
+    mycursor = get_db().cursor()
+    sql = """ UPDATE COLLECTE_VETEMENT SET quantite_vetement = %s, date_collecte = %s WHERE id_collecte_vetement = %s """
+    tuple_update = (quantite_vetement, date_collecte, id_collecte_vetement)
+    mycursor.execute(sql, tuple_update)
+    get_db().commit()
+    flash(f"Collecte {id_collecte_vetement} modifiée avec succès !")
+    return redirect('/Collecte-vetements/show')
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
