@@ -39,7 +39,12 @@ def show_achat():
 @app.route('/Achat/add', methods=["GET"])
 def add_achat():
     print('''affichage du formulaire pour enregistrer un Achat''')
-    return render_template('Tables/Achat_add.html')
+    mycursor = get_db().cursor()
+    sql=''' SELECT id_client, nom, prenom
+    FROM CLIENT;'''
+    mycursor.execute(sql)
+    clients = mycursor.fetchall()
+    return render_template('Tables/Achat_add.html',clients=clients)
 
 
 
@@ -68,13 +73,17 @@ def edit_achat():
     print(request.args.get('id_achat'))
     id_achat=request.args.get('id_achat')
     mycursor = get_db().cursor()
-    sql=''' SELECT id_achat , id_client,  montant_total , poids_total ,date_achat
+    sql=''' SELECT id_achat , id_client,  montant_total , poids_total ,date_achat 
     FROM ACHAT
     WHERE id_achat=%s;'''
     tuple_param=(id_achat,)
     mycursor.execute(sql,tuple_param)
     achat = mycursor.fetchone()
-    return render_template('Tables/Achat_edit.html', achat=achat)
+    sql=''' SELECT id_client, nom, prenom
+    FROM CLIENT;'''
+    mycursor.execute(sql)
+    clients = mycursor.fetchall()
+    return render_template('Tables/Achat_edit.html', achat=achat, clients=clients)
 
 @app.route('/Achat/edit', methods=["POST"])
 def valid_edit_achat():
@@ -152,5 +161,6 @@ def edit():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
