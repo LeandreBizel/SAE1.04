@@ -1,0 +1,3 @@
+pr se co mysql: 
+
+mysql --user=nlahurte  --password=secret --host=serveurmysql --database=BDD_nlahurte_sae --skip-ssl
