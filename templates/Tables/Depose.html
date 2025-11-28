@@ -1,11 +1,15 @@
 
-<!-- templates/Tables/Depose.html -->
+<!-- Depose.html -->
 {% extends 'layout.html' %}
+{% block style %}
+    <link type="text/css" rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/static/css/Achat_styles.css">
+{% endblock %}
 
 {% block body %}
 <h2>Liste des dépôts</h2>
 
-<!-- Boutons au-dessus du tableau -->
+
 <div >
     <a class="btn btn-outline-success" href="/Depose/add">Ajouter un dépôt</a>
     <a class="btn btn-outline-primary" href="/Depose/etat">Voir état des dépôts</a>
