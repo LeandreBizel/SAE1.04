@@ -315,7 +315,8 @@ def valid_edit_collecte_vetements():
     get_db().commit()
     flash(f"Collecte {id_collecte_vetement} modifiée avec succès !")
     return redirect('/Collecte-vetements/show')
-    # ------------------- DEPOSE -------------------
+
+# ------------------- DEPOSE -------------------
 @app.route('/Depose/show')
 def show_depose():
     cursor = get_db().cursor()
@@ -395,24 +396,7 @@ def valid_edit_depose():
     return redirect('/Depose/show')
 
 
-# ------------------- ETAT DES DEPOTS -------------------
-# ------------------- ETAT -------------------
-# ------------------- ETAT DES DEPOTS -------------------
-@app.route('/Depose/etat')
-def depose_etat():
-    mycursor = get_db().cursor()
 
-    # Somme des quantités déposées par client
-    mycursor.execute('''
-        SELECT c.nom, c.prenom, SUM(d.quantite_depot) AS total_depose
-        FROM DEPOSE d
-        JOIN CLIENT c ON d.id_client = c.id_client
-        GROUP BY c.id_client
-        ORDER BY c.nom
-    ''')
-    etat_list = mycursor.fetchall()
-
-    return render_template('Tables/Depose_etat.html', etat_list=etat_list)
 
 
 @app.route('/Depose/delete')
@@ -423,8 +407,11 @@ def delete_depose():
     return redirect('/Depose/show')
 
 
+# ------------------- FIN DEPOSE  -------------------
+
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
