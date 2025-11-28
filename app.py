@@ -245,7 +245,25 @@ def delete_depose():
     return redirect('/Depose/show')
 
 
+
+@app.route('/Depose/etat')
+def show_etat_depose():
+    cursor = get_db().cursor()
+    sql = '''
+        SELECT c.id_client, c.nom, c.prenom, SUM(d.quantite_depot) AS total_depose
+        FROM DEPOSE d
+        JOIN CLIENT c ON d.id_client = c.id_client
+        GROUP BY c.id_client, c.nom, c.prenom
+        ORDER BY total_depose DESC;
+    '''
+    cursor.execute(sql)
+    etat_list = cursor.fetchall()
+    return render_template('Tables/Depose_etat.html', etat_list=etat_list)
+
+
+
 # ------------------- FIN DEPOSE -------------------
 
 if __name__ == '__main__':
     app.run(debug=True)
+
