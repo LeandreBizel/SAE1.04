@@ -1,0 +1,41 @@
+<!-- templates/Tables/Depose_add.html -->
+{% extends 'layout.html' %}
+
+{% block body %}
+<h2>Ajouter un dépôt</h2>
+<form action="/Depose/add" method="POST">
+    <label>Client :</label>
+    <select name="id_client" required>
+        <option value="">-- Sélectionnez un client --</option>
+        {% for c in clients %}
+        <option value="{{ c.id_client }}">{{ c.nom }} {{ c.prenom }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Catégorie vêtement :</label>
+    <select name="id_categorie_vetement" required>
+        <option value="">-- Sélectionnez une catégorie --</option>
+        {% for cat in categories %}
+        <option value="{{ cat.id_categorie_vetement }}">{{ cat.nom_vetement }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>ID dépôt :</label>
+    <select name="id_depot" required>
+        <option value="">-- Sélectionnez un dépôt --</option>
+        {% for dep in depots %}
+        <option value="{{ dep.id_depot }}">{{ dep.id_depot }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Quantité déposée :</label>
+    <input type="number" name="quantite_depot"><br><br>
+
+    <label>Date dépôt :</label>
+    <input type="date" name="date_depot"><br><br>
+
+    <input type="submit" value="Ajouter">
+</form>
+
+<a href="/Depose/show">Retour à la liste</a>
+{% endblock %}
