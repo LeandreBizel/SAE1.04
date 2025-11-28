@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+{% block body %}
+<h2>TOTAL DE DÉPÔT PAR CLIENT</h2>
+
+<table >
+    <tr>
+        <th>Client</th>
+        <th>Total dépôt</th>
+    </tr>
+    {% for e in etat_list %}
+    <tr>
+        <td>{{ e.nom }} {{ e.prenom }}</td>
+        <td>{{ e.total_depose }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<a href="/Depose/show">Retour à la liste des dépôts</a>
+{% endblock %}
