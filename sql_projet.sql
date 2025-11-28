@@ -60,9 +60,9 @@ CREATE TABLE ACHAT(
     montant_total DECIMAL(10,2) NOT NULL,
     date_achat DATE,
     poids_total DECIMAL(10,2),
-    id_client INT,
+    client_id INT,
     PRIMARY KEY(id_achat),
-    FOREIGN KEY(id_client) REFERENCES CLIENT(id_client)
+    FOREIGN KEY(client_id) REFERENCES CLIENT(id_client)
 );
 
 CREATE TABLE DEPOT(
@@ -170,7 +170,7 @@ INSERT INTO CAMIONETTE (immatriculation, capacite_max) VALUES
 ('IJ-789-KL', 550.00);
 
 -- Achats
-INSERT INTO ACHAT (montant_total, date_achat, poids_total, id_client) VALUES
+INSERT INTO ACHAT (montant_total, date_achat, poids_total, client_id) VALUES
 (255.00, '2024-11-10', 15.50, 1),
 (384.00, '2024-11-12', 32.00, 1),
 (189.00, '2024-11-14', 18.00, 4),
