@@ -3,23 +3,27 @@
 {% block title %}<title>Collecte-vetements</title>{% endblock %}
 {% block body %}
 <h1 style="text-align: center;font-size: 50px;margin: 20px;">Collecte vêtements</h1>
-    <a href="/Collecte-vetements/add" class="btn  btn-sm">Ajouter un achat</a>
-    <table class="table">
+    <a href="/Collecte-vetements/add" class=" btn btn-sm btn-success sm border-3 m-3">Ajouter un achat</a>
+    <table class="table table-hover table-bordered table-sm align-middle shadow-sm ">
+        <thead class="table-dark">
             <tr>
-            <th>id</th><th>poid total</th><th>date d'achat</th>
+            <th style="text-align: center">ID</th><th style="text-align: center">DATE D'ACHAT</th><th style="text-align: center">POIDS TOTAL</th><th style="text-align: center">Catégorie</th>  <th> </th>
             </tr>
+            </thead>
             {% for Collectes in Collecte %}
             <tr>
-                <td>{{ Collectes.id_collecte_vetement }}</td>
-                <td>{{ Collectes.date_collecte }}</td>
-                <td>{{ Collectes.quantite_vetement }}€</td>
-                <td>
+                <td style="text-align: center">N°{{ Collectes.id_collecte_vetement }}</td>
+                <td style="text-align: center">{{ Collectes.date_collecte }}</td>
+                <td style="text-align: center">{{ Collectes.quantite_vetement }}€</td>
+                <td style="text-align: center">{{ Collectes.nom_vetement }} ({{ Collectes.id_categorie_vetement }})</td>
+                <td style="text-align: center">
                       <a href="/Collecte-vetements/edit?id_collecte_vetement={{ Collectes.id_collecte_vetement }}" class="btn btn-warning btn-sm">editer</a>
                       <a href="/Collecte-vetements/delete?id_collecte_vetement={{ Collectes.id_collecte_vetement }}" class="btn btn-danger btn-sm">supprimer</a>
                 </td>
 
             </tr>
             {% endfor %}
-            </table>
+
+    </table>
 
 {% endblock %}
