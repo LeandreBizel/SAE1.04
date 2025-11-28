@@ -1,1 +1,44 @@
-vf
+{% extends 'layout.html' %}
+
+{% block body %}
+<h2>Modifier un dépôt</h2>
+<form action="/Depose/edit" method="POST">
+    <input type="hidden" name="num_depot" value="{{ depose.num_depot }}">
+
+    <label>ID dépôt :</label>
+    <select name="id_depot" required>
+        {% for dep in depots %}
+        <option value="{{ dep.id_depot }}" {% if dep.id_depot == depose.id_depot %}selected{% endif %}>
+            {{ dep.id_depot }}
+        </option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Client :</label>
+    <select name="id_client" required>
+        {% for c in clients %}
+        <option value="{{ c.id_client }}" {% if c.id_client == depose.id_client %}selected{% endif %}>
+            {{ c.nom }} {{ c.prenom }}
+        </option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Catégorie vêtement :</label>
+    <select name="id_categorie_vetement" required>
+        {% for cat in categories %}
+        <option value="{{ cat.id_categorie_vetement }}" {% if cat.id_categorie_vetement == depose.id_categorie_vetement %}selected{% endif %}>
+            {{ cat.nom_vetement }}
+        </option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Quantité déposée :</label>
+    <input type="text" name="quantite_depot" value="{{ depose.quantite_depot }}"><br><br>
+
+    <label>Date dépôt :</label>
+    <input type="date" name="date_depot" value="{{ depose.date_depot }}"><br><br>
+
+    <input type="submit" value="Modifier">
+</form>
+<a href="/Depose/show">Retour à la liste</a>
+{% endblock %}
