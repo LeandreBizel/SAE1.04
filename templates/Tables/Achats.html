@@ -4,20 +4,23 @@
 <title>Achats</title>
 {% endblock %}
 {% block style %}
-    <link type="text/css" rel="stylesheet" href="/css/Achat_styles.css">
+    <link type="text/css" rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/static/css/Achat_styles.css">
 {% endblock %}
 {% block body %}
 <h1 style="text-align: center;font-size: 50px;margin: 20px;">Table Achat</h1>
-<a href="/Achat/add" class="btn  btn-sm">Ajouter un achat</a>
+<a href="/Achat/add" class="btn btn-lg btn-success border-3 m-3 " style="border-radius: 10px;">Ajouter un achat</a>
+<a href="/Achat/etat" class="btn  btn-sm btn-primary sm border-3 m-3" style="border-radius: 10px;">Statistiques</a>
 <table class="table table-hover table-bordered table-sm align-middle shadow-sm ">
     <thead class="table-dark">
         <tr class="text-center">
             <th>ID</th>
             <th>ID Client</th>
+            <th>Client</th>
             <th>Montant</th>
             <th>Poids total</th>
             <th>Date d'achat</th>
-            <th>Actions</th>
+            <th> </th>
         </tr>
     </thead>
 
@@ -25,7 +28,8 @@
         {% for achat in achats %}
         <tr>
             <td class="text-center">{{ achat.id_achat }}</td>
-            <td class="text-center">{{ achat.id_client }}</td>
+            <td class="text-center">{{ achat.client_id }}</td>
+            <td class="text-center">{{ achat.nom }} {{ achat.prenom }}</td>
             <td class="text-center fw-semibold">{{ achat.montant_total }}€</td>
             <td class="text-center">{{ achat.poids_total }}kg</td>
             <td class="text-center">{{ achat.date_achat }}</td>

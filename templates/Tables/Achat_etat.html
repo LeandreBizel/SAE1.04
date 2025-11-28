@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<title>Achat etat</title>
+{% endblock %}
+{% block body %}
+<div class="card m-4" style="width: 350px;align-content: center;justify-content: center">
+    <div class="card-header bg-success text-white">
+        <h5 class="card-title">Meilleur client</h5>
+        <p class="card-text mb-1"><strong>ID Client :</strong> {{ client.client_id }}</p>
+        <p class="card-text mb-1"><strong>Nom du client :</strong> {{ client.nom }} {{ client.prenom }}</p>
+        <p class="card-text mb-1"><strong>Nombre d'achat :</strong> {{ client.nb_achat }}</p>
+        <p class="card-text" ><strong>Total des achats :</strong> {{ client.total_depense }}€</p>
+    </div>
+</div>
+{% endblock %}
