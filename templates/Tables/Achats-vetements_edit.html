@@ -10,8 +10,15 @@
         <input type="hidden" name="id_achat_vetement" value="{{ Av.id_achat_vetement }}">
 
         <div class="mb-3">
-            <label for="id_achat" class="form-label">ID de l'achat :</label>
-            <input type="number" class="form-control" id="id_achat" name="id_achat" value="{{ Av.id_achat }}" required>
+           <label for="achat_id">Sélectionnez l'achat :</label>
+            <select name="achat_id" id="achat_id" class="form-control">
+                {% for achat in achats %}
+                    <option value="{{ achat.id_achat }}"
+                        {% if achat.id_achat == Av.achat_id %}selected{% endif %}>
+                        ID {{ achat.id_achat }} - {{ achat.date_achat }}
+                    </option>
+                {% endfor %}
+            </select>
         </div>
 
         <div class="mb-3">
