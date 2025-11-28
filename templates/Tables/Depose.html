@@ -1,7 +1,39 @@
 
-{% extends "layout.html" %}
+<!-- templates/Tables/Depose.html -->
+{% extends 'layout.html' %}
 
-{% block title %}<title>Depose</title>{% endblock %}
 {% block body %}
-<h1>page depose</h1>
+<h2>Liste des dépôts</h2>
+
+<!-- Boutons au-dessus du tableau -->
+<div >
+    <a class="btn btn-outline-success" href="/Depose/add">Ajouter un dépôt</a>
+    <a class="btn btn-outline-primary" href="/Depose/etat">Voir état des dépôts</a>
+</div>
+
+<table >
+    <tr>
+        <th>ID dépôt</th>
+        <th>Numéro dépôt</th>
+        <th>Client</th>
+        <th>Catégorie vêtement</th>
+        <th>Quantité déposée</th>
+        <th>Date dépôt</th>
+        <th>Actions</th>
+    </tr>
+    {% for d in depose_list %}
+    <tr>
+        <td>{{ d.id_depot }}</td>
+        <td>{{ d.num_depot }}</td>
+        <td>"{{ d.id_client }}" {{ d.client_nom }} {{ d.client_prenom }}</td>
+        <td>"{{ d.id_categorie_vetement }}" {{ d.nom_vetement }}</td>
+        <td>{{ d.quantite_depot }}</td>
+        <td>{{ d.date_depot }}</td>
+        <td>
+            <a href="/Depose/edit?id={{ d.num_depot }}">Modifier</a> |
+            <a href="/Depose/delete?id={{ d.num_depot }}">Supprimer</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
 {% endblock %}
