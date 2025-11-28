@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block title %}
+<title>Ajouter un achat de vêtement</title>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Ajouter un achat de vêtement</h1>
+
+    <form action="/Achats-vetements/add" method="post">
+
+        <div class="mb-3">
+          <label for="id_categorie_vetement" class="form-label">Catégorie du vêtement :</label>
+          <select class="form-select" name="id_categorie_vetement" required>
+              {% for cat in categories %}
+                  <option value="{{ cat.id_categorie_vetement }}">{{ cat.nom_vetement }}</option>
+              {% endfor %}
+          </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">ID achat :</label>
+            <input type="number" class="form-control" name="id_achat" placeholder="Entrer l'ID de l'achat" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="quantite_achete" class="form-label">Quantité achetée :</label>
+            <input type="number" step="0.01" class="form-control"
+                   id="quantite_achete" name="quantite_achete" placeholder="Entrer la quantité" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="date_achat" class="form-label">Date de l'achat :</label>
+            <input type="date" class="form-control"
+                   id="date_achat" name="date_achat"
+                   required>
+        </div>
+
+        <button type="submit" class="btn btn-success">Ajouter</button>
+        <a href="/Achats-vetements/show" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+{% endblock %}
