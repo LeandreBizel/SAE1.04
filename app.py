@@ -39,17 +39,7 @@ def show_achat():
      '''
     mycursor.execute(sql)
     achats = mycursor.fetchall()
-    sql = '''
-        SELECT client_id, SUM(montant_total) AS total_depense, CLIENT.nom, CLIENT.prenom
-        FROM ACHAT
-        JOIN CLIENT ON ACHAT.client_id = CLIENT.id_client
-        GROUP BY client_id
-        ORDER BY total_depense DESC
-        LIMIT 1;
-    '''
-    mycursor.execute(sql)
-    client = mycursor.fetchone()
-    return render_template('Tables/Achats.html', achats=achats, client=client)
+    return render_template('Tables/Achats.html', achats=achats)
 
 @app.route('/Achat/add', methods=["GET"])
 def add_achat():
@@ -134,6 +124,22 @@ def delete_achat():
     print(request.args)
     print(request.args.get('id_achat'))
     return redirect('/Achat/show')
+
+@app.route('/Achat/etat')
+def show_etat():
+    mycursor = get_db().cursor()
+    sql = '''
+        SELECT client_id, SUM(montant_total) AS total_depense,COUNT(id_achat) AS nb_achat, CLIENT.nom, CLIENT.prenom
+        FROM ACHAT
+        JOIN CLIENT ON ACHAT.client_id = CLIENT.id_client
+        GROUP BY client_id
+        ORDER BY total_depense DESC
+        LIMIT 1;
+    '''
+    mycursor.execute(sql)
+    client = mycursor.fetchone()
+    return render_template('/Tables/Achat_etat.html', client=client)
+
 
 @app.route('/Achats-vetements/show')
 def show_achat_vetements():
@@ -419,6 +425,7 @@ def delete_depose():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
