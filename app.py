@@ -251,7 +251,7 @@ def show_depose():
 @app.route('/Collecte-vetements/show')
 def show_collecte_vetements():
     mycursor = get_db().cursor()
-    sql = ''' SELECT cv.id_collecte_vetement,cv.date_collecte, cv.quantite_vetement, cv.id_collecte, cv.id_categorie_vetement, c.nom_vetement FROM COLLECTE_VETEMENT cv JOIN CATEGORIE_VETEMENTS c ON cv.id_categorie_vetement = c.id_categorie_vetement'''
+    sql = ''' SELECT cv.id_collecte_vetement,cv.date_collecte, cv.quantite_vetement, cv.collecte_id, cv.id_categorie_vetement, c.nom_vetement FROM COLLECTE_VETEMENT cv JOIN CATEGORIE_VETEMENTS c ON cv.id_categorie_vetement = c.id_categorie_vetement'''
     mycursor.execute(sql)
     Collecte = mycursor.fetchall()
     return render_template('Tables/Collecte-vetements.html', Collecte=Collecte)
@@ -270,10 +270,12 @@ def delete_collecte_vetements():
 @app.route('/Collecte-vetements/add', methods=['GET'])
 def add_collecte_vetements():
     mycursor = get_db().cursor()
-    sql = "SELECT id_categorie_vetement, nom_vetement FROM CATEGORIE_VETEMENTS"
-    mycursor.execute(sql)
+    mycursor.execute("SELECT id_categorie_vetement, nom_vetement FROM CATEGORIE_VETEMENTS")
     Cat = mycursor.fetchall()
-    return render_template('Tables/Collecte-vetements_add.html',Cat=Cat)
+    mycursor.execute("SELECT id_collecte, date_collecte FROM COLLECTE")
+    collectes = mycursor.fetchall()
+    return render_template('Tables/Collecte-vetements_add.html', Cat=Cat, collectes=collectes)
+
 
 
 @app.route('/Collecte-vetements/add', methods=['POST'])
@@ -281,12 +283,12 @@ def valid_add_collecte_vetements():
     print("Ajout d'une nouvelle collecte...")
     quantite_vetement = request.form.get('quantite_vetement')
     date_collecte = request.form.get('date_collecte')
-    id_collecte = request.form.get('id_collecte')
+    collecte_id = request.form.get('collecte_id')
     id_categorie_vetement = request.form.get('id_categorie_vetement')
     print(f"quantité = {quantite_vetement}, date = {date_collecte}")
     mycursor = get_db().cursor()
-    sql = """ INSERT INTO COLLECTE_VETEMENT (id_collecte,quantite_vetement, date_collecte,id_categorie_vetement) VALUES (%s, %s,%s,%s)"""
-    tuple_insert = (id_collecte, quantite_vetement, date_collecte,id_categorie_vetement)
+    sql = """ INSERT INTO COLLECTE_VETEMENT (collecte_id,quantite_vetement, date_collecte,id_categorie_vetement) VALUES (%s, %s,%s,%s)"""
+    tuple_insert = (collecte_id, quantite_vetement, date_collecte,id_categorie_vetement)
     mycursor.execute(sql, tuple_insert)
     get_db().commit()
     flash("Nouvelle collecte ajoutée avec succès !")
@@ -431,6 +433,7 @@ def delete_depose():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
