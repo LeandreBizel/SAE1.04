@@ -4,13 +4,87 @@
 <title>Achat etat</title>
 {% endblock %}
 {% block body %}
-<div class="card m-4" style="width: 350px;align-content: center;justify-content: center">
-    <div class="card-header bg-success text-white">
-        <h5 class="card-title">Meilleur client</h5>
-        <p class="card-text mb-1"><strong>ID Client :</strong> {{ client.client_id }}</p>
-        <p class="card-text mb-1"><strong>Nom du client :</strong> {{ client.nom }} {{ client.prenom }}</p>
-        <p class="card-text mb-1"><strong>Nombre d'achat :</strong> {{ client.nb_achat }}</p>
-        <p class="card-text" ><strong>Total des achats :</strong> {{ client.total_depense }}€</p>
+<div class="container-fluid m-4">
+    <div class="row justify-content-center">
+        {% for client in clients %}
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-lg border-0" style="align-content: center; justify-content: center">
+                <div class="card-header  text-dark text-center">
+                    <h5 class="card-title fw-bold mb-0">Top {{ loop.index }}</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h4 class="card-title text-primary mb-3">{{ client.nom }} {{ client.prenom }}</h4>
+                    <p class="card-text mb-2">
+                        <span class="badge bg-secondary">ID: {{ client.client_id }}</span>
+                    </p>
+                    <p class="card-text mb-3">
+                        <strong>Nombre d'achats :</strong> <span class="badge bg-info text-dark">{{ client.nb_achat
+                            }}</span>
+                    </p>
+                    <div class="alert alert-success p-2">
+                        <p class="card-text mb-0 fs-5"><strong>Total :</strong> {{ client.total_depense }}€</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title">Statistiques par période</h5>
+                </div>
+                <div class="card-body">
+                    <form action="/Achat/etat" method="post">
+                        <div class="mb-3">
+                            <label for="date_debut" class="form-label">Date de début</label>
+                            <input type="date" class="form-control" id="date_debut" name="date_debut"
+                                value="{{ date_debut }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="date_fin" class="form-label">Date de fin</label>
+                            <input type="date" class="form-control" id="date_fin" name="date_fin" value="{{ date_fin }}"
+                                required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Voir les statistiques</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% if liste_client %}
+        <div class="col-md-8">
+            <h3>Statistiques des achats du {{ date_debut }} au {{ date_fin }}</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Nombre d'achats</th>
+                        <th>Total Montant</th>
+                        <th>Moyenne de montant / achats</th>
+                        <th>Total Poids</th>
+                        <th>Moyenne de poids / achats</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client in liste_client %}
+                    <tr>
+                        <td>{{ client.nom }} {{ client.prenom }}</td>
+                        <td>{{ client.nb_achats }}</td>
+                        <td>{{ client.total_acheté }}€</td>
+                        <td>{{ client.moyenne_acheté | round(2) }}€</td>
+                        <td>{{ client.total_poids }} kg</td>
+                        <td>{{ client.moyenne_poids | round(2) }} kg</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
