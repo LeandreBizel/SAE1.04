@@ -9,10 +9,10 @@ import pymysql.cursors
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
-            host="serveurmysql",                 # à modifier
-            user="nlahurte",                     # à modifier
+            host="192.168.1.124",                 # à modifier
+            user="user",                     # à modifier
             password="secret",                   # à modifier
-            database="BDD_nlahurte_sae",        # à modifier
+            database="sae",        # à modifier
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
@@ -118,11 +118,42 @@ def show_etat():
         JOIN CLIENT ON ACHAT.client_id = CLIENT.id_client
         GROUP BY client_id
         ORDER BY total_depense DESC
-        LIMIT 1;
+        LIMIT 3;
     '''
     mycursor.execute(sql)
-    client = mycursor.fetchone()
-    return render_template('/Tables/Achat_etat.html', client=client)
+    clients = mycursor.fetchall()
+    return render_template('/Tables/Achat_etat.html', clients=clients)
+
+@app.route('/Achat/etat', methods=['POST'])
+def show_etat_param():
+    date_debut = request.form.get('date_debut')
+    date_fin = request.form.get('date_fin')
+    mycursor = get_db().cursor()
+    
+    # Re-fetch the "Top 3 Clients" data to keep the page consistent
+    sql_client = '''
+        SELECT client_id, SUM(montant_total) AS total_depense,COUNT(id_achat) AS nb_achat, CLIENT.nom, CLIENT.prenom
+        FROM ACHAT
+        JOIN CLIENT ON ACHAT.client_id = CLIENT.id_client
+        GROUP BY client_id
+        ORDER BY total_depense DESC
+        LIMIT 3;
+    '''
+    mycursor.execute(sql_client)
+    clients = mycursor.fetchall()
+
+    sql= '''
+        SELECT CLIENT.nom, CLIENT.prenom, COUNT(ACHAT.id_achat) AS nb_achats, SUM(ACHAT.montant_total) AS total_acheté, SUM(ACHAT.poids_total) AS total_poids, AVG(ACHAT.montant_total) AS moyenne_acheté, AVG(ACHAT.poids_total) AS moyenne_poids
+        FROM ACHAT 
+        JOIN CLIENT ON ACHAT.client_id = CLIENT.id_client
+        WHERE ACHAT.date_achat BETWEEN %s AND %s
+        GROUP BY CLIENT.id_client
+        ORDER BY total_acheté DESC;
+    '''
+    parametre=(date_debut, date_fin)
+    mycursor.execute(sql, parametre)
+    liste_client = mycursor.fetchall()
+    return render_template('/Tables/Achat_etat.html', liste_client=liste_client, date_debut=date_debut, date_fin=date_fin, clients=clients)
 
 
 # ------------------- ACHATS VETEMENTS -------------------
@@ -151,7 +182,7 @@ def show_achat_vetements():
 @app.route('/Collecte-vetements/show')
 def show_collecte_vetements():
     mycursor = get_db().cursor()
-    sql = ''' SELECT cv.id_collecte_vetement,cv.date_collecte, cv.quantite_vetement, cv.collecte_id, cv.id_categorie_vetement, c.nom_vetement FROM COLLECTE_VETEMENT cv JOIN CATEGORIE_VETEMENTS c ON cv.id_categorie_vetement = c.id_categorie_vetement'''
+    sql = ''' SELECT cv.id_collecte_vetement,cv.date_collecte, cv.quantite_vetement, cv.id_collecte, cv.id_categorie_vetement, c.nom_vetement FROM COLLECTE_VETEMENT cv JOIN CATEGORIE_VETEMENTS c ON cv.id_categorie_vetement = c.id_categorie_vetement'''
     mycursor.execute(sql)
     Collecte = mycursor.fetchall()
     return render_template('Tables/Collecte-vetements.html', Collecte=Collecte)
