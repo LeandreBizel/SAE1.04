@@ -129,8 +129,6 @@ def show_etat_param():
     date_debut = request.form.get('date_debut')
     date_fin = request.form.get('date_fin')
     mycursor = get_db().cursor()
-    
-    # Re-fetch the "Top 3 Clients" data to keep the page consistent
     sql_client = '''
         SELECT client_id, SUM(montant_total) AS total_depense,COUNT(id_achat) AS nb_achat, CLIENT.nom, CLIENT.prenom
         FROM ACHAT
@@ -176,6 +174,93 @@ def show_achat_vetements():
     mycursor.execute(sql)
     Av = mycursor.fetchall()
     return render_template('Tables/Achats-vetements.html', Av=Av)
+
+
+@app.route('/Achats-vetements/edit', methods=['GET'])
+def edit_achat_vetement():
+    mycursor = get_db().cursor()
+    id_achat_vetement = request.args.get('id_achat_vetement')
+    sql_av = "SELECT * FROM ACHAT_VETEMENT WHERE id_achat_vetement = %s"
+    mycursor.execute(sql_av, (id_achat_vetement,))
+    Av = mycursor.fetchone()
+    sql_categories = "SELECT * FROM CATEGORIE_VETEMENTS"
+    mycursor.execute(sql_categories)
+    categories = mycursor.fetchall()
+    return render_template('Tables/Achats-vetements_edit.html', Av=Av, categories=categories)
+
+
+
+@app.route('/Achats-vetements/edit', methods=['POST'])
+def valid_edit_achat_vetement():
+    id_achat_vetement = request.form.get('id_achat_vetement')
+    quantite_achete = request.form.get('quantite_achete')
+    id_categorie_vetement = request.form.get('id_categorie_vetement')
+    id_achat = request.form.get('id_achat')
+    date_achat = request.form.get('date_achat')  # <-- nouvelle ligne
+
+    mycursor = get_db().cursor()
+    sql = """
+        UPDATE ACHAT_VETEMENT av
+        JOIN ACHAT a ON av.id_achat = a.id_achat
+        SET av.quantite_achete = %s,
+            av.id_categorie_vetement = %s,
+            av.id_achat = %s,
+            a.date_achat = %s
+        WHERE av.id_achat_vetement = %s
+    """
+    mycursor.execute(sql, (quantite_achete, id_categorie_vetement, id_achat, date_achat, id_achat_vetement))
+    get_db().commit()
+
+    flash(f"Achat de vêtement {id_achat_vetement} modifié avec succès !")
+    return redirect('/Achats-vetements/show')
+
+
+
+
+@app.route('/Achats-vetements/delete', methods=['GET'])
+def delete_achat_vetement():
+    mycursor = get_db().cursor()
+    id_achat_vetement = request.args.get('id_achat_vetement')
+    tuple_delete = (id_achat_vetement,)
+    sql = "DELETE FROM ACHAT_VETEMENT WHERE id_achat_vetement = %s"
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+    flash('Un achat de vêtement a été supprimé : ' + id_achat_vetement)
+    return redirect('/Achats-vetements/show')
+
+
+@app.route('/Achats-vetements/add', methods=['GET'])
+def add_achat_vetement():
+    mycursor = get_db().cursor()
+    sql = "SELECT id_categorie_vetement, nom_vetement FROM CATEGORIE_VETEMENTS"
+    mycursor.execute(sql)
+    categories = mycursor.fetchall()
+    return render_template('Tables/Achats-vetements_add.html', categories=categories)
+
+
+@app.route('/Achats-vetements/add', methods=['POST'])
+def valid_add_achat_vetement():
+    print("Ajout d'un nouvel achat de vêtement...")
+    id_achat = request.form.get('id_achat')
+    quantite_achete = request.form.get('quantite_achete')
+    id_categorie_vetement = request.form.get('id_categorie_vetement')
+    date_achat = request.form.get('date_achat')
+    print(f"ID achat = {id_achat}, quantité = {quantite_achete}, date = {date_achat}")
+    mycursor = get_db().cursor()
+    sql_insert = """
+        INSERT INTO ACHAT_VETEMENT (id_achat, id_categorie_vetement, quantite_achete)
+        VALUES (%s, %s, %s)
+    """
+    mycursor.execute(sql_insert, (id_achat, id_categorie_vetement, quantite_achete))
+    sql_update_date = "UPDATE ACHAT SET date_achat = %s WHERE id_achat = %s"
+    mycursor.execute(sql_update_date, (date_achat, id_achat))
+    get_db().commit()
+    flash("Nouvel achat de vêtement ajouté avec succès !")
+    return redirect('/Achats-vetements/show')
+
+@app.route('/Depose/show')
+def show_depose():
+    return render_template('Tables/Depose.html')
 
 
 # ------------------- COLLECTE VETEMENTS -------------------
@@ -359,5 +444,6 @@ def show_etat_depose():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
