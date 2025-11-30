@@ -33,15 +33,7 @@
             </select>
         </div>
 
-        <div class="mb-3">
-            <label for="id_depot" class="form-label">ID dépôt :</label>
-            <select name="id_depot" id="id_depot" class="form-select" required>
-                <option value="">-- Sélectionnez un dépôt --</option>
-                {% for dep in depots %}
-                <option value="{{ dep.id_depot }}">{{ dep.id_depot }}</option>
-                {% endfor %}
-            </select>
-        </div>
+       
 
         <div class="mb-3">
             <label for="quantite_depot" class="form-label">Quantité déposée (kg) :</label>
