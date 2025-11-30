@@ -20,7 +20,7 @@
             <select name="client_id" class="form-select" required>
                 <option value="">Sélectionnez un client</option>
                 {% for c in clients %}
-                <option value="{{ c.id_client }}" {% if c.id_client == depose.client_id %}selected{% endif %}>
+                <option value="{{ c.id_client }}" >
                     {{ c.nom }} {{ c.prenom }}
                 </option>
                 {% endfor %}
@@ -32,7 +32,7 @@
             <select name="categorie_vetement_id" class="form-select" required>
                 <option value="">Sélectionnez une catégorie</option>
                 {% for cat in categories %}
-                <option value="{{ cat.id_categorie_vetement }}" {% if cat.id_categorie_vetement == depose.categorie_vetement_id %}selected{% endif %}>
+                <option value="{{ cat.id_categorie_vetement }}">
                     {{ cat.nom_vetement }}
                 </option>
                 {% endfor %}
@@ -44,7 +44,7 @@
             <select name="depot_id" class="form-select" required>
                 <option value="">Sélectionnez un dépôt</option>
                 {% for dep in depots %}
-                <option value="{{ dep.id_depot }}" {% if dep.id_depot == depose.depot_id %}selected{% endif %}>
+                <option value="{{ dep.id_depot }}" >
                     {{ dep.id_depot }}
                 </option>
                 {% endfor %}
@@ -53,7 +53,7 @@
 
         <div class="mb-3">
             <label for="quantite_depot" class="form-label">Quantité déposée (kg) :</label>
-            <input type="number" step="0.01" name="quantite_depot" id="quantite_depot" class="form-control" value="{{ depose.quantite_depot }}">
+            <input type="number" name="quantite_depot" id="quantite_depot" class="form-control" value="{{ depose.quantite_depot }}">
         </div>
 
         <div class="mb-3">
