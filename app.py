@@ -419,13 +419,15 @@ def valid_edit_collecte_vetements():
     return redirect('/Collecte-vetements/show')
 
 # ------------------- DEPOSE -------------------
+
 @app.route('/Depose/show')
 def show_depose():
     cursor = get_db().cursor()
     cursor.execute('''
-        SELECT d.id_depose, d.depot_id, d.quantite_depot, d.date_depot,
-               c.nom AS client_nom, c.prenom AS client_prenom, c.id_client,
-               cv.nom_vetement, cv.id_categorie_vetement
+        SELECT d.id_depose, d.quantite_depot, d.date_depot,
+               d.depot_id,
+               c.id_client, c.nom AS client_nom, c.prenom AS client_prenom,
+               cv.id_categorie_vetement, cv.nom_vetement
         FROM DEPOSE d
         JOIN CLIENT c ON d.client_id = c.id_client
         JOIN CATEGORIE_VETEMENTS cv ON d.categorie_vetement_id = cv.id_categorie_vetement
@@ -452,14 +454,14 @@ def add_depose():
 def valid_add_depose():
     cursor = get_db().cursor()
     cursor.execute('''
-        INSERT INTO DEPOSE(quantite_depot, date_depot, depot_id, categorie_vetement_id, client_id)
+        INSERT INTO DEPOSE (quantite_depot, date_depot, depot_id, categorie_vetement_id, client_id)
         VALUES (%s, %s, %s, %s, %s)
     ''', (
         request.form.get('quantite_depot'),
         request.form.get('date_depot'),
-        request.form.get('depot_id'),
-        request.form.get('categorie_vetement_id'),
-        request.form.get('client_id')
+        request.form.get('id_depot'),
+        request.form.get('id_categorie_vetement'),
+        request.form.get('id_client')
     ))
     get_db().commit()
     return redirect('/Depose/show')
@@ -490,9 +492,9 @@ def valid_edit_depose():
     ''', (
         request.form.get('quantite_depot'),
         request.form.get('date_depot'),
-        request.form.get('depot_id'),
-        request.form.get('categorie_vetement_id'),
-        request.form.get('client_id'),
+        request.form.get('id_depot'),
+        request.form.get('id_categorie_vetement'),
+        request.form.get('id_client'),
         request.form.get('id_depose')
     ))
     get_db().commit()
@@ -507,25 +509,23 @@ def delete_depose():
     return redirect('/Depose/show')
 
 
-
 @app.route('/Depose/etat')
 def show_etat_depose():
     cursor = get_db().cursor()
-    sql = '''
+    cursor.execute('''
         SELECT c.id_client, c.nom, c.prenom, SUM(d.quantite_depot) AS total_depose
         FROM DEPOSE d
         JOIN CLIENT c ON d.client_id = c.id_client
         GROUP BY c.id_client, c.nom, c.prenom
-        ORDER BY total_depose DESC;
-    '''
-    cursor.execute(sql)
+        ORDER BY total_depose DESC
+    ''')
     etat_list = cursor.fetchall()
     return render_template('Tables/Depose_etat.html', etat_list=etat_list)
 
-
-
 # ------------------- FIN DEPOSE -------------------
+
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
