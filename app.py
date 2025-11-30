@@ -535,10 +535,26 @@ def show_etat_depose():
     etat_list = cursor.fetchall()
     return render_template('Tables/Depose_etat.html', etat_list=etat_list)
 
+@app.route('/Depose/etat_depots_client')
+def etat_depots_client():
+    cursor = mysql.connection.cursor()
+    cursor.execute("""
+        SELECT c.nom, c.prenom,
+               SUM(d.poids) AS total_depose,
+               COUNT(d.num_depot) AS nb_depots
+        FROM Client c
+        JOIN Depose d ON c.id_client = d.id_client
+        GROUP BY c.id_client
+    """)
+    etat_list = cursor.fetchall()
+    return render_template("etat_depots.html", etat_list=etat_list)
+
+
 
 
 # ------------------- FIN DEPOSE -------------------
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
