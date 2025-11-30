@@ -537,17 +537,20 @@ def show_etat_depose():
 
 @app.route('/Depose/etat_depots_client')
 def etat_depots_client():
-    cursor = mysql.connection.cursor()
-    cursor.execute("""
-        SELECT c.nom, c.prenom,
-               SUM(d.poids) AS total_depose,
+    cursor = get_db().cursor()
+    sql = '''
+        SELECT c.id_client, c.nom, c.prenom,
+               SUM(d.quantite_depot) AS total_depose,
                COUNT(d.num_depot) AS nb_depots
-        FROM Client c
-        JOIN Depose d ON c.id_client = d.id_client
-        GROUP BY c.id_client
-    """)
+        FROM DEPOSE d
+        JOIN CLIENT c ON d.id_client = c.id_client
+        GROUP BY c.id_client, c.nom, c.prenom
+        ORDER BY total_depose DESC;
+    '''
+    cursor.execute(sql)
     etat_list = cursor.fetchall()
-    return render_template("etat_depots.html", etat_list=etat_list)
+    return render_template('Tables/Depose_etat.html', etat_list=etat_list)
+
 
 
 
@@ -556,5 +559,6 @@ def etat_depots_client():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
