@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<title>Statistiques des Achats de Vêtements</title>
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid m-3" style="overflow-x: hidden;">
+    <div class="row justify-content-center">
+        {% for row in global_stats %}
+        <div class="col-md-2 mb-3">
+            <div class="card shadow-lg border-0" style="align-content: center; justify-content: center">
+                <div class="card-header text-dark text-center">
+                    <h5 class="card-title fw-bold mb-0">{{ row.nom_vetement }}</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="alert alert-success p-2">
+                        <p class="card-text mb-0 fs-5"><strong>Total :</strong> {{ row.total_quantite }}kg</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title">Filtrer par quantité totale</h5>
+                </div>
+                <div class="card-body">
+                    <form action="/Achats-vetements/etat" method="post">
+                        <div class="mb-3">
+                            <label for="min_quantite" class="form-label">Quantité minimum</label>
+                            <input type="number" step="0.01" class="form-control" id="min_quantite" name="min_quantite"
+                                value="{{ min_quantite }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="max_quantite" class="form-label">Quantité maximum</label>
+                            <input type="number" step="0.01" class="form-control" id="max_quantite" name="max_quantite"
+                                value="{{ max_quantite }}" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Voir les statistiques</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% if stats_filtrees %}
+        <div class="col-md-8" style="overflow-x: hidden;">
+            <h3>Statistiques (Quantité entre {{ min_quantite }} et {{ max_quantite }})</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Catégorie</th>
+                        <th>Quantité Totale</th>
+                        <th>Quantité Moyenne / Achats-vetements</th>
+                        <th>Nombre d'Achats de ce vêtement</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in stats_filtrees %}
+                    <tr>
+                        <td>{{ row.nom_vetement }}</td>
+                        <td>{{ row.total_quantite }}</td>
+                        <td>{{ row.moy_quantite | round(2) }}</td>
+                        <td>{{ row.nb_achats }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+    <br>
+    <a href="/Achats-vetements/show" class="btn btn-secondary">Retour aux achats</a>
+</div>
+{% endblock %}

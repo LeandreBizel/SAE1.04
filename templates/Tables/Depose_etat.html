@@ -1,24 +1,32 @@
-{% extends 'layout.html' %}
-{% block stylesheet %}
-<link rel="stylesheet" href="/static/css/bootstrap.min.css">
-<link rel="stylesheet" href="/static/css/Achat_styles.css">
+{% extends "layout.html" %}
+
+{% block title %}
+<title>Statistiques Dépôts</title>
+{% endblock %}
+
+{% block style %}
+<link type="text/css" rel="stylesheet" href="/static/css/bootstrap.min.css">
+<link type="text/css" rel="stylesheet" href="/static/css/Achat_styles.css">
 {% endblock %}
 
 {% block body %}
-<h2>TOTAL DE DÉPÔT PAR CLIENT</h2>
+<h1 style="text-align: center;font-size: 50px;margin: 20px;">Total de dépôt par client</h1>
+<a href="/Depose/show" class="btn btn-secondary m-3" style="border-radius: 10px;">Retour à la liste</a>
 
-<table >
-    <tr>
-        <th>Client</th>
-        <th>Total dépôt</th>
-    </tr>
-    {% for e in etat_list %}
-    <tr>
-        <td>{{ e.nom }} {{ e.prenom }}</td>
-        <td>{{ e.total_depose }}</td>
-    </tr>
-    {% endfor %}
+<table class="table table-hover table-bordered table-sm align-middle shadow-sm">
+    <thead class="table-dark">
+        <tr class="text-center">
+            <th>Client</th>
+            <th>Total déposé (kg)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in etat_list %}
+        <tr>
+            <td class="text-center">{{ e.nom }} {{ e.prenom }}</td>
+            <td class="text-center fw-semibold">{{ e.total_depose }} kg</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
-
-<a href="/Depose/show">Retour à la liste des dépôts</a>
 {% endblock %}

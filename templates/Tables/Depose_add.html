@@ -1,46 +1,60 @@
-<!-- templates/Tables/Depose_add.html -->
-{% extends 'layout.html' %}
-{% block stylesheet %}
-<link rel="stylesheet" href="/static/css/bootstrap.min.css">
-<link rel="stylesheet" href="/static/css/Achat_styles.css">
+{% extends "layout.html" %}
+
+{% block title %}
+<title>Ajouter un dépôt</title>
 {% endblock %}
 
+{% block style %}
+<link type="text/css" rel="stylesheet" href="/static/css/bootstrap.min.css">
+<link type="text/css" rel="stylesheet" href="/static/css/Achat_styles.css">
+{% endblock %}
 
 {% block body %}
-<h2>Ajouter un dépôt</h2>
-<form action="/Depose/add" method="POST">
-    <label>Client :</label>
-    <select name="id_client" required>
-        <option value="">-- Sélectionnez un client --</option>
-        {% for c in clients %}
-        <option value="{{ c.id_client }}">{{ c.nom }} {{ c.prenom }}</option>
-        {% endfor %}
-    </select><br><br>
+<div class="container mt-4">
+    <h1>Ajouter un dépôt</h1>
+    <form action="/Depose/add" method="POST">
+        <div class="mb-3">
+            <label for="id_client" class="form-label">Client :</label>
+            <select name="id_client" id="id_client" class="form-select" required>
+                <option value="">-- Sélectionnez un client --</option>
+                {% for c in clients %}
+                <option value="{{ c.id_client }}">{{ c.nom }} {{ c.prenom }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <label>Catégorie vêtement :</label>
-    <select name="id_categorie_vetement" required>
-        <option value="">-- Sélectionnez une catégorie --</option>
-        {% for cat in categories %}
-        <option value="{{ cat.id_categorie_vetement }}">{{ cat.nom_vetement }}</option>
-        {% endfor %}
-    </select><br><br>
+        <div class="mb-3">
+            <label for="id_categorie_vetement" class="form-label">Catégorie vêtement :</label>
+            <select name="id_categorie_vetement" id="id_categorie_vetement" class="form-select" required>
+                <option value="">-- Sélectionnez une catégorie --</option>
+                {% for cat in categories %}
+                <option value="{{ cat.id_categorie_vetement }}">{{ cat.nom_vetement }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <label>ID dépôt :</label>
-    <select name="id_depot" required>
-        <option value="">-- Sélectionnez un dépôt --</option>
-        {% for dep in depots %}
-        <option value="{{ dep.id_depot }}">{{ dep.id_depot }}</option>
-        {% endfor %}
-    </select><br><br>
+        <div class="mb-3">
+            <label for="id_depot" class="form-label">ID dépôt :</label>
+            <select name="id_depot" id="id_depot" class="form-select" required>
+                <option value="">-- Sélectionnez un dépôt --</option>
+                {% for dep in depots %}
+                <option value="{{ dep.id_depot }}">{{ dep.id_depot }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <label>Quantité déposée :</label>
-    <input type="number" name="quantite_depot"><br><br>
+        <div class="mb-3">
+            <label for="quantite_depot" class="form-label">Quantité déposée (kg) :</label>
+            <input type="number" step="0.01" name="quantite_depot" id="quantite_depot" class="form-control" required>
+        </div>
 
-    <label>Date dépôt :</label>
-    <input type="date" name="date_depot"><br><br>
+        <div class="mb-3">
+            <label for="date_depot" class="form-label">Date dépôt :</label>
+            <input type="date" name="date_depot" id="date_depot" class="form-control" required>
+        </div>
 
-    <input type="submit" value="Ajouter">
-</form>
-
-<a href="/Depose/show">Retour à la liste</a>
+        <button type="submit" class="btn btn-success">Ajouter</button>
+        <a href="/Depose/show" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
 {% endblock %}

@@ -97,10 +97,10 @@ CREATE TABLE COLLECTE_VETEMENT(
 CREATE TABLE ACHAT_VETEMENT(
     id_achat_vetement INT AUTO_INCREMENT,
     quantite_achete DECIMAL(10,2),
-    id_achat INT NOT NULL,
+    achat_id INT NOT NULL,
     id_categorie_vetement INT NOT NULL,
     PRIMARY KEY(id_achat_vetement),
-    FOREIGN KEY(id_achat) REFERENCES ACHAT(id_achat),
+    FOREIGN KEY(achat_id) REFERENCES ACHAT(id_achat),
     FOREIGN KEY(id_categorie_vetement) REFERENCES CATEGORIE_VETEMENTS(id_categorie_vetement)
 );
 
@@ -207,7 +207,7 @@ INSERT INTO COLLECTE_VETEMENT (date_collecte, quantite_vetement, id_collecte, id
 ('2024-11-20', 47.30, 5, 2);
 
 -- Achat de vêtements
-INSERT INTO ACHAT_VETEMENT (quantite_achete, id_achat, id_categorie_vetement) VALUES
+INSERT INTO ACHAT_VETEMENT (quantite_achete, achat_id, id_categorie_vetement) VALUES
 (8.50, 1, 1),
 (7.00, 1, 2),
 (15.00, 2, 3),

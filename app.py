@@ -79,7 +79,7 @@ def edit_achat():
     tuple_param=(id_achat,)
     mycursor.execute(sql,tuple_param)
     achat = mycursor.fetchone()
-    sql=''' SELECT client_id, nom, prenom
+    sql=''' SELECT id_client, nom, prenom
     FROM CLIENT;'''
     mycursor.execute(sql)
     clients = mycursor.fetchall()
@@ -104,8 +104,10 @@ def delete_achat():
     id_achat=request.args.get('id_achat',0)
     mycursor = get_db().cursor()
     tuple_param=(id_achat,)
+    sql = "DELETE FROM ACHAT_VETEMENT WHERE achat_id=%s;"
+    mycursor.execute(sql, tuple_param)
     sql="DELETE FROM ACHAT WHERE id_achat=%s;"
-    mycursor.execute(sql,tuple_param)
+    mycursor.execute(sql,tuple_param)  
     get_db().commit()
     return redirect('/Achat/show')
 
@@ -129,6 +131,8 @@ def show_etat_param():
     date_debut = request.form.get('date_debut')
     date_fin = request.form.get('date_fin')
     mycursor = get_db().cursor()
+    
+    # Re-fetch the "Top 3 Clients" data to keep the page consistent
     sql_client = '''
         SELECT client_id, SUM(montant_total) AS total_depense,COUNT(id_achat) AS nb_achat, CLIENT.nom, CLIENT.prenom
         FROM ACHAT
@@ -162,15 +166,20 @@ def show_achat_vetements():
         SELECT 
             av.id_achat_vetement,
             av.quantite_achete,
-            av.id_achat,
+            av.achat_id,
             av.id_categorie_vetement,
             c.nom_vetement,
-            a.date_achat
+            a.date_achat,
+            a.client_id,
+            cl.nom,
+            cl.prenom
         FROM ACHAT_VETEMENT av
         JOIN CATEGORIE_VETEMENTS c 
             ON av.id_categorie_vetement = c.id_categorie_vetement
         JOIN ACHAT a
-            ON av.id_achat = a.id_achat '''
+            ON av.achat_id = a.id_achat
+        JOIN CLIENT cl
+            ON a.client_id = cl.id_client '''
     mycursor.execute(sql)
     Av = mycursor.fetchall()
     return render_template('Tables/Achats-vetements.html', Av=Av)
@@ -186,7 +195,14 @@ def edit_achat_vetement():
     sql_categories = "SELECT * FROM CATEGORIE_VETEMENTS"
     mycursor.execute(sql_categories)
     categories = mycursor.fetchall()
-    return render_template('Tables/Achats-vetements_edit.html', Av=Av, categories=categories)
+    sql_achats = '''SELECT id_achat, date_achat, client_id, CLIENT.nom, CLIENT.prenom 
+    FROM ACHAT 
+    JOIN CLIENT 
+    ON ACHAT.client_id = CLIENT.id_client 
+    ORDER BY id_achat DESC'''
+    mycursor.execute(sql_achats)
+    achats = mycursor.fetchall()
+    return render_template('Tables/Achats-vetements_edit.html', Av=Av, categories=categories, achats=achats)
 
 
 
@@ -195,20 +211,25 @@ def valid_edit_achat_vetement():
     id_achat_vetement = request.form.get('id_achat_vetement')
     quantite_achete = request.form.get('quantite_achete')
     id_categorie_vetement = request.form.get('id_categorie_vetement')
-    id_achat = request.form.get('id_achat')
-    date_achat = request.form.get('date_achat')  # <-- nouvelle ligne
+    achat_id = request.form.get('achat_id')
 
     mycursor = get_db().cursor()
     sql = """
-        UPDATE ACHAT_VETEMENT av
-        JOIN ACHAT a ON av.id_achat = a.id_achat
-        SET av.quantite_achete = %s,
-            av.id_categorie_vetement = %s,
-            av.id_achat = %s,
-            a.date_achat = %s
-        WHERE av.id_achat_vetement = %s
+        UPDATE ACHAT_VETEMENT
+        SET quantite_achete = %s,
+            id_categorie_vetement = %s,
+            achat_id = %s
+        WHERE id_achat_vetement = %s
     """
-    mycursor.execute(sql, (quantite_achete, id_categorie_vetement, id_achat, date_achat, id_achat_vetement))
+    mycursor.execute(sql, (quantite_achete, id_categorie_vetement, achat_id, id_achat_vetement))
+    
+    sql_somme_poids = "SELECT SUM(quantite_achete) as poids FROM ACHAT_VETEMENT WHERE achat_id = %s"
+    mycursor.execute(sql_somme_poids, (achat_id,))
+    result = mycursor.fetchone()
+    poids_total = result['poids']
+    sql_update_poids = "UPDATE ACHAT SET poids_total = %s WHERE id_achat = %s"
+    mycursor.execute(sql_update_poids, (poids_total, achat_id))
+    
     get_db().commit()
 
     flash(f"Achat de vêtement {id_achat_vetement} modifié avec succès !")
@@ -221,9 +242,29 @@ def valid_edit_achat_vetement():
 def delete_achat_vetement():
     mycursor = get_db().cursor()
     id_achat_vetement = request.args.get('id_achat_vetement')
+    
+    # Récupérer l'achat_id avant la suppression
+    sql_get_achat_id = "SELECT achat_id FROM ACHAT_VETEMENT WHERE id_achat_vetement = %s"
+    mycursor.execute(sql_get_achat_id, (id_achat_vetement,))
+    result = mycursor.fetchone()
+    achat_id = result['achat_id']
+
     tuple_delete = (id_achat_vetement,)
     sql = "DELETE FROM ACHAT_VETEMENT WHERE id_achat_vetement = %s"
     mycursor.execute(sql, tuple_delete)
+
+    # Mettre à jour le poids total
+    sql_somme_poids = "SELECT SUM(quantite_achete) as poids FROM ACHAT_VETEMENT WHERE achat_id = %s"
+    mycursor.execute(sql_somme_poids, (achat_id,))
+    result_poids = mycursor.fetchone()
+    poids_total = result_poids['poids']
+    # Si plus aucun vêtement, le poids est 0 (ou None selon la logique, ici on mettra 0 si None)
+    if poids_total is None:
+        poids_total = 0
+        
+    sql_update_poids = "UPDATE ACHAT SET poids_total = %s WHERE id_achat = %s"
+    mycursor.execute(sql_update_poids, (poids_total, achat_id))
+
     get_db().commit()
     flash('Un achat de vêtement a été supprimé : ' + id_achat_vetement)
     return redirect('/Achats-vetements/show')
@@ -235,37 +276,96 @@ def add_achat_vetement():
     sql = "SELECT id_categorie_vetement, nom_vetement FROM CATEGORIE_VETEMENTS"
     mycursor.execute(sql)
     categories = mycursor.fetchall()
-    return render_template('Tables/Achats-vetements_add.html', categories=categories)
+    sql_achats = '''SELECT id_achat, date_achat, client_id, CLIENT.nom, CLIENT.prenom 
+    FROM ACHAT 
+    JOIN CLIENT 
+    ON ACHAT.client_id = CLIENT.id_client 
+    ORDER BY id_achat DESC'''
+    mycursor.execute(sql_achats)
+    achats = mycursor.fetchall()
+    return render_template('Tables/Achats-vetements_add.html', categories=categories, achats=achats)
 
 
 @app.route('/Achats-vetements/add', methods=['POST'])
 def valid_add_achat_vetement():
     print("Ajout d'un nouvel achat de vêtement...")
-    id_achat = request.form.get('id_achat')
+    achat_id = request.form.get('achat_id')
     quantite_achete = request.form.get('quantite_achete')
     id_categorie_vetement = request.form.get('id_categorie_vetement')
     date_achat = request.form.get('date_achat')
-    print(f"ID achat = {id_achat}, quantité = {quantite_achete}, date = {date_achat}")
+    print(f"ID achat = {achat_id}, quantité = {quantite_achete}, date = {date_achat}")
     mycursor = get_db().cursor()
     sql_insert = """
-        INSERT INTO ACHAT_VETEMENT (id_achat, id_categorie_vetement, quantite_achete)
+        INSERT INTO ACHAT_VETEMENT (achat_id, id_categorie_vetement, quantite_achete)
         VALUES (%s, %s, %s)
     """
-    mycursor.execute(sql_insert, (id_achat, id_categorie_vetement, quantite_achete))
+    mycursor.execute(sql_insert, (achat_id, id_categorie_vetement, quantite_achete))
     sql_update_date = "UPDATE ACHAT SET date_achat = %s WHERE id_achat = %s"
-    mycursor.execute(sql_update_date, (date_achat, id_achat))
+    mycursor.execute(sql_update_date, (date_achat, achat_id))
+    sql_somme_poids = "SELECT SUM(quantite_achete) as poids FROM ACHAT_VETEMENT WHERE achat_id = %s"
+    mycursor.execute(sql_somme_poids, (achat_id,))
+    result = mycursor.fetchone()
+    poids_total = result['poids']
+    sql_update_poids = "UPDATE ACHAT SET poids_total = %s WHERE id_achat = %s"
+    mycursor.execute(sql_update_poids, (poids_total, achat_id))
     get_db().commit()
     flash("Nouvel achat de vêtement ajouté avec succès !")
     return redirect('/Achats-vetements/show')
 
 
 
+@app.route('/Achats-vetements/etat', methods=['GET'])
+def show_achat_vetement_etat():
+    mycursor = get_db().cursor()
+    sql = '''
+        SELECT c.nom_vetement, SUM(av.quantite_achete) as total_quantite
+        FROM ACHAT_VETEMENT av
+        JOIN CATEGORIE_VETEMENTS c ON av.id_categorie_vetement = c.id_categorie_vetement
+        GROUP BY c.nom_vetement
+        ORDER BY total_quantite DESC
+    '''
+    mycursor.execute(sql)
+    global_stats = mycursor.fetchall()
+    return render_template('Tables/Achats-vetements_etat.html', global_stats=global_stats)
+
+
+@app.route('/Achats-vetements/etat', methods=['POST'])
+def show_achat_vetement_etat_param():
+    min_quantite = request.form.get('min_quantite')
+    max_quantite = request.form.get('max_quantite')
+    mycursor = get_db().cursor()
+    
+    # Re-fetch global stats
+    sql_global = '''
+        SELECT c.nom_vetement, SUM(av.quantite_achete) as total_quantite
+        FROM ACHAT_VETEMENT av
+        JOIN CATEGORIE_VETEMENTS c ON av.id_categorie_vetement = c.id_categorie_vetement
+        GROUP BY c.nom_vetement
+        ORDER BY total_quantite DESC
+    '''
+    mycursor.execute(sql_global)
+    global_stats = mycursor.fetchall()
+
+    # Fetch filtered stats
+    sql_filtered = '''
+        SELECT c.nom_vetement, SUM(av.quantite_achete) as total_quantite, AVG(av.quantite_achete) as moy_quantite, COUNT(av.id_achat_vetement) as nb_achats
+        FROM ACHAT_VETEMENT av
+        JOIN CATEGORIE_VETEMENTS c ON av.id_categorie_vetement = c.id_categorie_vetement
+        GROUP BY c.nom_vetement
+        HAVING total_quantite BETWEEN %s AND %s
+        ORDER BY total_quantite DESC
+    '''
+    mycursor.execute(sql_filtered, (min_quantite, max_quantite))
+    stats_filtrees = mycursor.fetchall()
+    
+    return render_template('Tables/Achats-vetements_etat.html', global_stats=global_stats, stats_filtrees=stats_filtrees, min_quantite=min_quantite, max_quantite=max_quantite)
+
 
 # ------------------- COLLECTE VETEMENTS -------------------
 @app.route('/Collecte-vetements/show')
 def show_collecte_vetements():
     mycursor = get_db().cursor()
-    sql = ''' SELECT cv.id_collecte_vetement,cv.date_collecte, cv.quantite_vetement, cv.collecte_id, cv.id_categorie_vetement, c.nom_vetement FROM COLLECTE_VETEMENT cv JOIN CATEGORIE_VETEMENTS c ON cv.id_categorie_vetement = c.id_categorie_vetement'''
+    sql = ''' SELECT cv.id_collecte_vetement,cv.date_collecte, cv.quantite_vetement, cv.id_collecte, cv.id_categorie_vetement, c.nom_vetement FROM COLLECTE_VETEMENT cv JOIN CATEGORIE_VETEMENTS c ON cv.id_categorie_vetement = c.id_categorie_vetement'''
     mycursor.execute(sql)
     Collecte = mycursor.fetchall()
     return render_template('Tables/Collecte-vetements.html', Collecte=Collecte)
@@ -301,7 +401,7 @@ def valid_add_collecte_vetements():
     id_categorie_vetement = request.form.get('id_categorie_vetement')
     print(f"quantité = {quantite_vetement}, date = {date_collecte}")
     mycursor = get_db().cursor()
-    sql = """ INSERT INTO COLLECTE_VETEMENT (collecte_id,quantite_vetement, date_collecte,id_categorie_vetement) VALUES (%s, %s,%s,%s)"""
+    sql = """ INSERT INTO COLLECTE_VETEMENT (id_collecte,quantite_vetement, date_collecte,id_categorie_vetement) VALUES (%s, %s,%s,%s)"""
     tuple_insert = (collecte_id, quantite_vetement, date_collecte,id_categorie_vetement)
     mycursor.execute(sql, tuple_insert)
     get_db().commit()
@@ -331,7 +431,6 @@ def valid_edit_collecte_vetements():
     get_db().commit()
     flash(f"Collecte {id_collecte_vetement} modifiée avec succès !")
     return redirect('/Collecte-vetements/show')
-
 
 # ------------------- DEPOSE -------------------
 @app.route('/Depose/show')
@@ -442,7 +541,4 @@ def show_etat_depose():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-
 

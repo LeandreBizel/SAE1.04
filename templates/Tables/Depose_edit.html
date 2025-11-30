@@ -1,49 +1,68 @@
-{% extends 'layout.html' %}
-{% block stylesheet %}
-<link rel="stylesheet" href="/static/css/bootstrap.min.css">
-<link rel="stylesheet" href="/static/css/Achat_styles.css">
+{% extends "layout.html" %}
+
+{% block title %}
+<title>Modifier un dépôt</title>
 {% endblock %}
 
+{% block style %}
+<link type="text/css" rel="stylesheet" href="/static/css/bootstrap.min.css">
+<link type="text/css" rel="stylesheet" href="/static/css/Achat_styles.css">
+{% endblock %}
 
 {% block body %}
-<h2>Modifier un dépôt</h2>
-<form action="/Depose/edit" method="POST">
-    <input type="hidden" name="num_depot" value="{{ depose.num_depot }}">
+<div class="container mt-4">
+    <h1>Modifier un dépôt</h1>
+    <form action="/Depose/edit" method="POST">
+        <input type="hidden" name="num_depot" value="{{ depose.num_depot }}">
 
-    <label>ID dépôt :</label>
-    <select name="id_depot" required>
-        {% for dep in depots %}
-        <option value="{{ dep.id_depot }}" {% if dep.id_depot == depose.id_depot %}selected{% endif %}>
-            {{ dep.id_depot }}
-        </option>
-        {% endfor %}
-    </select><br><br>
+        <div class="mb-3">
+            <label for="id_depot" class="form-label">ID dépôt :</label>
+            <select name="id_depot" id="id_depot" class="form-select" required>
+                {% for dep in depots %}
+                <option value="{{ dep.id_depot }}" {% if dep.id_depot==depose.id_depot %}selected{% endif %}>
+                    {{ dep.id_depot }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <label>Client :</label>
-    <select name="id_client" required>
-        {% for c in clients %}
-        <option value="{{ c.id_client }}" {% if c.id_client == depose.id_client %}selected{% endif %}>
-            {{ c.nom }} {{ c.prenom }}
-        </option>
-        {% endfor %}
-    </select><br><br>
+        <div class="mb-3">
+            <label for="id_client" class="form-label">Client :</label>
+            <select name="id_client" id="id_client" class="form-select" required>
+                {% for c in clients %}
+                <option value="{{ c.id_client }}" {% if c.id_client==depose.id_client %}selected{% endif %}>
+                    {{ c.nom }} {{ c.prenom }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <label>Catégorie vêtement :</label>
-    <select name="id_categorie_vetement" required>
-        {% for cat in categories %}
-        <option value="{{ cat.id_categorie_vetement }}" {% if cat.id_categorie_vetement == depose.id_categorie_vetement %}selected{% endif %}>
-            {{ cat.nom_vetement }}
-        </option>
-        {% endfor %}
-    </select><br><br>
+        <div class="mb-3">
+            <label for="id_categorie_vetement" class="form-label">Catégorie vêtement :</label>
+            <select name="id_categorie_vetement" id="id_categorie_vetement" class="form-select" required>
+                {% for cat in categories %}
+                <option value="{{ cat.id_categorie_vetement }}" {% if
+                    cat.id_categorie_vetement==depose.id_categorie_vetement %}selected{% endif %}>
+                    {{ cat.nom_vetement }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <label>Quantité déposée :</label>
-    <input type="text" name="quantite_depot" value="{{ depose.quantite_depot }}"><br><br>
+        <div class="mb-3">
+            <label for="quantite_depot" class="form-label">Quantité déposée (kg) :</label>
+            <input type="number" step="0.01" name="quantite_depot" id="quantite_depot" class="form-control"
+                value="{{ depose.quantite_depot }}" required>
+        </div>
 
-    <label>Date dépôt :</label>
-    <input type="date" name="date_depot" value="{{ depose.date_depot }}"><br><br>
+        <div class="mb-3">
+            <label for="date_depot" class="form-label">Date dépôt :</label>
+            <input type="date" name="date_depot" id="date_depot" class="form-control" value="{{ depose.date_depot }}"
+                required>
+        </div>
 
-    <input type="submit" value="Modifier">
-</form>
-<a href="/Depose/show">Retour à la liste</a>
+        <button type="submit" class="btn btn-primary">Modifier</button>
+        <a href="/Depose/show" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
 {% endblock %}

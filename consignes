@@ -1,0 +1,127 @@
+Objectif final
+
+Chaque étudiant doit réaliser une interface WEB pour afficher/ajouter/modifier/supprimer une des tables du MCD.
+
+
+L’évaluation, compte tenu de la diversité des sujets, portera sur :
+
+    La complexité de l’interface du CRUD (jointure avec la/les clé(s) étrangère(s)).
+    La présence de clé(s) étrangère(s) gérée(s) sous forme de liste déroulante.
+    La complexité de(s) l’état(s).
+    La qualité du jeu de tests.
+    La qualité de l’interface (surtout en terme d’utilisabilité)
+
+
+
+ATTENTION : utiliser le code vu en cours, l’utilisation d’une IA générative pour produire un code non conforme au TP vu en cours entraînera une grosse pénalité.
+
+Une pénalité importante sera appliquée si les règles suivantes ne sont pas respectées :
+
+    Pas de boucle Python dans le fichier app.py (par exemple avec le mot-clé next ou for).
+    Pas d’utilisation des mots-clés with et try en Python (gestion des exceptions).
+    Pas d’utilisation de la fonction url_for pour gérer une route.
+    Pas d’utilisation de route paramétrée /route/<id> à la place des routes avec paramètres GET /route?id= (paramètres de requête).
+    Pas d’utilisation de JavaScript.
+    Pas d’utilisation de module Python non vu en TP.
+    Pas d’utilisation de code que vous ne maîtrisez pas
+
+
+    Ne pas utiliser l’attribut “required” dans tous les champs INPUT. Utilisez le uniquement pour les clés étrangères et le champ “nom”(ou libellé) de l’enregistrement le plus important qui permet d’identifier l’enregistrement.
+    Ne pas utiliser “request.method” dans le fichier app.py.
+    Ne pas utiliser de condition “SI” (“IF”) dans le fichier app.py.
+
+
+schéma et définition du travail de chacun ; code SQL
+
+Une fois vos modèles réalisés (MCD et MLD ou MR) : Il faudra choisir une table pour chaque étudiant.
+
+
+Cette table doit obligatoirement posséder une clé étrangère au minimum (une liste déroulante au minimum).
+
+
+Cette table est définie avec l’enseignant qui suit votre travail de SAE.
+
+Sur certains schémas, il faudra peut être modifier votre MCD pour simplifier la réalisation de l’interface
+voir la partie sur la modification du schéma
+voir la partie sur la modification du schéma
+Application à réaliser
+
+Chaque étudiant doit réaliser :
+
+    Une interface web permettant d’afficher, ajouter, modifier et supprimer des données d’une des tables du MCD (“CRUD”).
+    Un ou plusieurs états, paramétrés ou non, en rapport avec cette table. Cet état consiste à afficher le résultat d’une requête avec une jointure.
+
+CRUD : Create Read Update Delete
+CRUD : Create Read Update Delete
+
+
+La complexité de réalisation sera prise en compte. Ne pas à choisir les tables les moins complexes pour les interfaces. Il est obligatoire de choisir une table qui possède au moins une clé étrangère (une liste déroulante) .
+
+
+La conception visuelle (design) ne sera que très peu évaluée. Seule l’utilisabilité de l’interface sera beaucoup prise en compte lors de l’évaluation.
+Menu commun à réaliser :
+
+    Le menu doit permettre un accès facile à chaque table et chaque état, tout en indiquant l’auteur du travail.
+
+    Réalisez un menu avec les noms des tables auxquelles on peut accéder pour afficher, ajouter, modifier ou supprimer des données. Ajouter entre parenthèses le nom de l’auteur (nom de l’étudiant).
+
+    La page d’accueil doit indiquer le numéro de groupe SAE, le groupe de TP et les étudiants qui font partie du groupe.
+
+exemple de page d’accueil et de menu
+exemple de page d’accueil et de menu
+
+Le menu permet d’accéder rapidement au “CRUD” réalisé par un étudiant. Le menu permet également d’accéder à l’état réalisé par un étudiant en sachant qui est l’auteur du travail.
+exemple de page d’accueil et de menu
+exemple de page d’accueil et de menu
+Interface CRUD pour afficher, ajouter, modifier et supprimer des données dans une table
+
+CRUD : Create, Read, Update, Delete
+
+
+    AFFICHAGE : Essayez d’inclure les informations les plus pertinentes dans vos requêtes et utilisez autant que possible des jointures
+
+    Exemple : Lors de l’affichage des données, vous pouvez afficher le type de chambre (avec son identifiant) ainsi que l’état de la chambre (avec son identifiant).
+
+exemple d’affichage d’une table
+exemple d’affichage d’une table
+Interfaces (formulaires) pour ajouter/modifier les données :
+
+    Lors de la modification d’un enregistrement, le formulaire contient la valeur de chaque champ de l’enregistrement en base de données.
+
+    Utilisez une/des liste(s) déroulante(s) pour saisir la/les valeur(s) d’une/des clé(s) étrangère(s) reliée(s) à une/des clé(s) primaire(s) (entier)
+        Pour l’ajout d’un enregistrement, ne proposez pas de valeur par défaut. L’utilisateur est obligé de choisir une valeur.
+        Pour la saisie d’une clé étrangère (entier), afficher à l’utilisateur dans les valeurs possibles de la clé étrangère , lorsque possible, un texte plus explicite issu de l’autre table pour faciliter la compréhension.
+        Lors de la modification d’un enregistrement, la valeur proposée par défaut doit être celle présente dans la base de données.
+
+Dans votre jeu de test, choisissez des noms des noms qui permettent de désigner clairement un objet. Par exemple, évitez de désigner un véhicule par un numéro qui est l’identifiant de la clé primaire automatique ( Dans une flotte de véhicules, il est possible de remplacer le numéro 3 par un nouveau véhicule ayant également le numéro 3, mais qui peut être différent.)
+suppression des données :
+
+    Il est souhaitable et recommandé de vérifier la possibilité de supprimer les données avant d’effectuer la suppression.
+
+États :
+
+Dans le contexte des bases de données, un état fait référence à une représentation figée des données stockées à un moment donné. Il s’agit d’un instantané ou d’une vue spécifique des données dans un certain état, généralement obtenu à partir d’une requête SQL de type “SELECT” exécutée sur la base de données.
+
+Un état permet d’afficher les informations contenues dans la base de données selon certains critères spécifiés, tels que des filtres, des agrégations ou des jointures. Il peut être utilisé pour générer des rapports, des factures, des statistiques ou tout autre type de sortie qui présente les données de manière structurée et significative.
+
+L’idée principale d’un état est de fournir une vue claire et cohérente des données à un moment précis, facilitant ainsi leur analyse, leur compréhension et leur utilisation pour des besoins spécifiques.
+
+
+Une fiche de paye, une facture, un bon de livraison sont des états. Un tableau de bord de données permet d’afficher, suivre, analyser des données.
+
+    réaliser au moins un état par étudiant avec des fonctions d’agrégation et des jointures.
+
+
+La note sera d’autant meilleure que les états seront complexes à réaliser :
+exemple d’état “minimum” (capture d’écran d’un ancien projet)
+exemple d’état “minimum” (capture d’écran d’un ancien projet)
+exemple d’état très complet (capture d’écran d’un ancien projet)
+exemple d’état très complet (capture d’écran d’un ancien projet)
+paramétrage d’un état
+
+    Ces états peuvent être paramétrés. (exemples : saisir 2 dates dans un formulaire et afficher les enregistrements d’une table jointe à une autre table (avec des fonctions d’agrégation) lorsque les enregistrements sont compris entre les 2 dates saisies )
+
+paramétrage d’un état (capture d’écran d’un ancien projet)
+paramétrage d’un état (capture d’écran d’un ancien projet)
+
+Remarque : les paramètres peuvent être saisis dans un formulaire indépendant.

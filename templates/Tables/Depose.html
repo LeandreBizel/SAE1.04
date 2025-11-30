@@ -1,44 +1,46 @@
+{% extends "layout.html" %}
 
-<!-- Depose.html -->
-{% extends 'layout.html' %}
-{% block stylesheet %}
-<link rel="stylesheet" href="/static/css/bootstrap.min.css">
-<link rel="stylesheet" href="/static/css/Achat_styles.css">
+{% block title %}
+<title>Dépôts</title>
 {% endblock %}
 
+{% block style %}
+<link type="text/css" rel="stylesheet" href="/static/css/bootstrap.min.css">
+<link type="text/css" rel="stylesheet" href="/static/css/Achat_styles.css">
+{% endblock %}
 
 {% block body %}
-<h2>Liste des dépôts</h2>
+<h1 style="text-align: center;font-size: 50px;margin: 20px;">Table Dépôts</h1>
+<a href="/Depose/add" class="btn btn-lg btn-success border-3 m-3" style="border-radius: 10px;">Ajouter un dépôt</a>
+<a href="/Depose/etat" class="btn btn-sm btn-primary border-3 m-3" style="border-radius: 10px;">Statistiques</a>
 
-
-<div >
-    <a class="btn btn-outline-success" href="/Depose/add">Ajouter un dépôt</a>
-    <a class="btn btn-outline-primary" href="/Depose/etat">Voir état des dépôts</a>
-</div>
-
-<table >
-    <tr>
-        <th>ID dépôt</th>
-        <th>Numéro dépôt</th>
-        <th>Client</th>
-        <th>Catégorie vêtement</th>
-        <th>Quantité déposée</th>
-        <th>Date dépôt</th>
-        <th>Actions</th>
-    </tr>
-    {% for d in depose_list %}
-    <tr>
-        <td>{{ d.id_depot }}</td>
-        <td>{{ d.num_depot }}</td>
-        <td>"{{ d.id_client }}" {{ d.client_nom }} {{ d.client_prenom }}</td>
-        <td>"{{ d.id_categorie_vetement }}" {{ d.nom_vetement }}</td>
-        <td>{{ d.quantite_depot }}</td>
-        <td>{{ d.date_depot }}</td>
-        <td>
-            <a href="/Depose/edit?id={{ d.num_depot }}">Modifier</a> |
-            <a href="/Depose/delete?id={{ d.num_depot }}">Supprimer</a>
-        </td>
-    </tr>
-    {% endfor %}
+<table class="table table-hover table-bordered table-sm align-middle shadow-sm">
+    <thead class="table-dark">
+        <tr class="text-center">
+            <th>Numéro dépôt</th>
+            <th>ID dépôt</th>
+            <th>Client</th>
+            <th>Catégorie vêtement</th>
+            <th>Quantité déposée (kg)</th>
+            <th>Date dépôt</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for d in depose_list %}
+        <tr>
+            <td class="text-center">{{ d.num_depot }}</td>
+            <td class="text-center">{{ d.id_depot }}</td>
+            <td class="text-center">{{ d.client_nom }} {{ d.client_prenom }} ({{ d.id_client }})</td>
+            <td class="text-center">{{ d.nom_vetement }} ({{ d.id_categorie_vetement }})</td>
+            <td class="text-center fw-semibold">{{ d.quantite_depot }} kg</td>
+            <td class="text-center">{{ d.date_depot }}</td>
+            <td class="text-center">
+                <a href="/Depose/edit?id={{ d.num_depot }}" class="btn btn-warning btn-sm me-1">Éditer</a>
+                <a href="/Depose/delete?id={{ d.num_depot }}" class="btn btn-danger btn-sm">Supprimer</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}

@@ -10,30 +10,30 @@
         <input type="hidden" name="id_achat_vetement" value="{{ Av.id_achat_vetement }}">
 
         <div class="mb-3">
-           <label for="achat_id">Sélectionnez l'achat :</label>
+            <label for="id_achat">Sélectionnez l'achat :</label>
             <select name="achat_id" id="achat_id" class="form-control">
                 {% for achat in achats %}
-                    <option value="{{ achat.id_achat }}"
-                        {% if achat.id_achat == Av.achat_id %}selected{% endif %}>
-                        ID {{ achat.id_achat }} - {{ achat.date_achat }}
-                    </option>
+                <option value="{{ achat.id_achat }}" {% if achat.id_achat==Av.achat_id %}selected{% endif %}>
+                    ID {{ achat.id_achat }} - {{ achat.date_achat }} (Client : {{ achat.nom }} {{ achat.prenom }})
+                </option>
                 {% endfor %}
             </select>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Quantité achetée :</label>
-            <input type="number" step="0.1" class="form-control" name="quantite_achete" value="{{ Av.quantite_achete }}" required>
+            <input type="number" step="0.1" class="form-control" name="quantite_achete" value="{{ Av.quantite_achete }}"
+                required>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Catégorie de vêtement :</label>
             <select class="form-control" name="id_categorie_vetement" required>
                 {% for categorie in categories %}
-                    <option value="{{ categorie.id_categorie_vetement }}"
-                        {% if categorie.id_categorie_vetement == Av.id_categorie_vetement %} selected {% endif %}>
-                        {{ categorie.nom_vetement }}
-                    </option>
+                <option value="{{ categorie.id_categorie_vetement }}" {% if
+                    categorie.id_categorie_vetement==Av.id_categorie_vetement %} selected {% endif %}>
+                    {{ categorie.nom_vetement }}
+                </option>
                 {% endfor %}
             </select>
         </div>
