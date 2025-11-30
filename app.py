@@ -426,8 +426,8 @@ def show_depose():
     cursor.execute('''
         SELECT d.id_depose, d.quantite_depot, d.date_depot,
                d.depot_id,
-               c.id_client, c.nom AS client_nom, c.prenom AS client_prenom,
-               cv.id_categorie_vetement, cv.nom_vetement
+               c.id_client AS client_id, c.nom AS client_nom, c.prenom AS client_prenom,
+               cv.id_categorie_vetement AS categorie_vetement_id, cv.nom_vetement
         FROM DEPOSE d
         JOIN CLIENT c ON d.client_id = c.id_client
         JOIN CATEGORIE_VETEMENTS cv ON d.categorie_vetement_id = cv.id_categorie_vetement
@@ -525,7 +525,9 @@ def show_etat_depose():
 # ------------------- FIN DEPOSE -------------------
 
 
+
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
