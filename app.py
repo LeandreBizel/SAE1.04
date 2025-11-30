@@ -131,8 +131,6 @@ def show_etat_param():
     date_debut = request.form.get('date_debut')
     date_fin = request.form.get('date_fin')
     mycursor = get_db().cursor()
-    
-    # Re-fetch the "Top 3 Clients" data to keep the page consistent
     sql_client = '''
         SELECT client_id, SUM(montant_total) AS total_depense,COUNT(id_achat) AS nb_achat, CLIENT.nom, CLIENT.prenom
         FROM ACHAT
@@ -242,8 +240,6 @@ def valid_edit_achat_vetement():
 def delete_achat_vetement():
     mycursor = get_db().cursor()
     id_achat_vetement = request.args.get('id_achat_vetement')
-    
-    # Récupérer l'achat_id avant la suppression
     sql_get_achat_id = "SELECT achat_id FROM ACHAT_VETEMENT WHERE id_achat_vetement = %s"
     mycursor.execute(sql_get_achat_id, (id_achat_vetement,))
     result = mycursor.fetchone()
@@ -253,15 +249,10 @@ def delete_achat_vetement():
     sql = "DELETE FROM ACHAT_VETEMENT WHERE id_achat_vetement = %s"
     mycursor.execute(sql, tuple_delete)
 
-    # Mettre à jour le poids total
     sql_somme_poids = "SELECT SUM(quantite_achete) as poids FROM ACHAT_VETEMENT WHERE achat_id = %s"
     mycursor.execute(sql_somme_poids, (achat_id,))
-    result_poids = mycursor.fetchone()
-    poids_total = result_poids['poids']
-    # Si plus aucun vêtement, le poids est 0 (ou None selon la logique, ici on mettra 0 si None)
-    if poids_total is None:
-        poids_total = 0
-        
+    result = mycursor.fetchone()
+    poids_total = result['poids']
     sql_update_poids = "UPDATE ACHAT SET poids_total = %s WHERE id_achat = %s"
     mycursor.execute(sql_update_poids, (poids_total, achat_id))
 
@@ -291,8 +282,12 @@ def valid_add_achat_vetement():
     print("Ajout d'un nouvel achat de vêtement...")
     achat_id = request.form.get('achat_id')
     quantite_achete = request.form.get('quantite_achete')
+    if not quantite_achete:
+        quantite_achete = 0
     id_categorie_vetement = request.form.get('id_categorie_vetement')
     date_achat = request.form.get('date_achat')
+    if not date_achat:
+        date_achat = date.today().strftime("%Y-%m-%d")
     print(f"ID achat = {achat_id}, quantité = {quantite_achete}, date = {date_achat}")
     mycursor = get_db().cursor()
     sql_insert = """
@@ -309,7 +304,6 @@ def valid_add_achat_vetement():
     sql_update_poids = "UPDATE ACHAT SET poids_total = %s WHERE id_achat = %s"
     mycursor.execute(sql_update_poids, (poids_total, achat_id))
     get_db().commit()
-    flash("Nouvel achat de vêtement ajouté avec succès !")
     return redirect('/Achats-vetements/show')
 
 
@@ -334,8 +328,6 @@ def show_achat_vetement_etat_param():
     min_quantite = request.form.get('min_quantite')
     max_quantite = request.form.get('max_quantite')
     mycursor = get_db().cursor()
-    
-    # Re-fetch global stats
     sql_global = '''
         SELECT c.nom_vetement, SUM(av.quantite_achete) as total_quantite
         FROM ACHAT_VETEMENT av
@@ -345,8 +337,6 @@ def show_achat_vetement_etat_param():
     '''
     mycursor.execute(sql_global)
     global_stats = mycursor.fetchall()
-
-    # Fetch filtered stats
     sql_filtered = '''
         SELECT c.nom_vetement, SUM(av.quantite_achete) as total_quantite, AVG(av.quantite_achete) as moy_quantite, COUNT(av.id_achat_vetement) as nb_achats
         FROM ACHAT_VETEMENT av
@@ -535,30 +525,10 @@ def show_etat_depose():
     etat_list = cursor.fetchall()
     return render_template('Tables/Depose_etat.html', etat_list=etat_list)
 
-@app.route('/Depose/etat_depots_client')
-def etat_depots_client():
-    cursor = get_db().cursor()
-    sql = '''
-        SELECT c.id_client, c.nom, c.prenom,
-               SUM(d.quantite_depot) AS total_depose,
-               COUNT(d.num_depot) AS nb_depots
-        FROM DEPOSE d
-        JOIN CLIENT c ON d.id_client = c.id_client
-        GROUP BY c.id_client, c.nom, c.prenom
-        ORDER BY total_depose DESC;
-    '''
-    cursor.execute(sql)
-    etat_list = cursor.fetchall()
-    return render_template('Tables/Depose_etat.html', etat_list=etat_list)
-
-
-
 
 
 # ------------------- FIN DEPOSE -------------------
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
 
