@@ -13,9 +13,9 @@
 <h1>Total et nombre de dépôts par client</h1>
 <a href="/Depose/show">Retour à la liste</a>
 
-<table >
-    <thead >
-        <tr>
+<table class="table table-hover table-bordered table-sm align-middle shadow-sm">
+    <thead class="table-dark">
+        <tr class="text-center">
             <th>Client</th>
             <th>Total déposé (kg)</th>
             <th>Nombre de dépôts</th>
@@ -24,9 +24,9 @@
     <tbody>
         {% for e in etat_list %}
         <tr>
-            <td >{{ e.nom }} {{ e.prenom }}</td>
-            <td >{{ e.total_depose }} kg</td>
-            <td >{{ e.nb_depots }}</td>
+            <td class="text-center">{{ e.nom }} {{ e.prenom }}</td>
+            <td class="text-center fw-semibold">{{ e.total_depose }} kg</td>
+            <td class="text-center fw-semibold">{{ e.nb_depots }}</td>
         </tr>
         {% endfor %}
     </tbody>
