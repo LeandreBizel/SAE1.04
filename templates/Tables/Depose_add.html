@@ -14,8 +14,8 @@
     <h1>Ajouter un dépôt</h1>
     <form action="/Depose/add" method="POST">
         <div class="mb-3">
-            <label for="id_client" class="form-label">Client :</label>
-            <select name="id_client" id="id_client" class="form-select" required>
+            <label for="id_client" >Client :</label>
+            <select name="id_client" id="id_client" required>
                 <option value="">Sélectionnez un client</option>
                 {% for c in clients %}
                 <option value="{{ c.id_client }}">{{ c.nom }} {{ c.prenom }}</option>
@@ -48,16 +48,16 @@
 
         <div class="mb-3">
             <label for="quantite_depot" class="form-label">Quantité déposée (kg) :</label>
-            <input type="number" step="0.01" name="quantite_depot" id="quantite_depot" class="form-control" required>
+            <input type="number"  name="quantite_depot" id="quantite_depot" >
         </div>
 
         <div class="mb-3">
             <label for="date_depot" class="form-label">Date dépôt :</label>
-            <input type="date" name="date_depot" id="date_depot" class="form-control" required>
+            <input type="date" name="date_depot" id="date_depot" >
         </div>
 
-        <button type="submit" class="btn btn-success">Ajouter</button>
-        <a href="/Depose/show" class="btn btn-secondary">Annuler</a>
+        <button type="submit" >Ajouter</button>
+        <a href="/Depose/show" >Annuler</a>
     </form>
 </div>
 {% endblock %}
