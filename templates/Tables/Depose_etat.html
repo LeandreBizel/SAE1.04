@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-<title>Nombre de dépôts par client</title>
+<title>Statistiques Dépôts</title>
 {% endblock %}
 
 {% block stylesheet %}
@@ -10,10 +10,29 @@
 {% endblock %}
 
 {% block body %}
-<h1 style="text-align: center; font-size: 50px; margin: 20px;">Nombre de dépôts par client</h1>
+<h1 style="text-align: center; font-size: 50px; margin: 20px;">Statistiques Dépôts</h1>
 <a href="/Depose/show" class="btn btn-secondary m-3" style="border-radius: 10px;">Retour à la liste</a>
 
+<h3>Total déposé par client</h3>
 <table class="table table-hover table-bordered table-sm align-middle shadow-sm">
+    <thead class="table-dark">
+        <tr class="text-center">
+            <th>Client</th>
+            <th>Total déposé (kg)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in total_depose_list %}
+        <tr>
+            <td class="text-center">{{ e.nom }} {{ e.prenom }}</td>
+            <td class="text-center fw-semibold">{{ e.total_depose }} kg</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Nombre de dépôts par client</h3>
+<table class="table table-hover table-bordered table-sm align-middle shadow-sm mt-4">
     <thead class="table-dark">
         <tr class="text-center">
             <th>Client</th>
@@ -21,7 +40,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for e in etat2_list %}
+        {% for e in nb_depots_list %}
         <tr>
             <td class="text-center">{{ e.nom }} {{ e.prenom }}</td>
             <td class="text-center fw-semibold">{{ e.nb_depots }}</td>
