@@ -21,7 +21,7 @@ CREATE TABLE CLIENT(
     telephone VARCHAR(15),
     email VARCHAR(100),
     total_kg_achetes DECIMAL(10,2) DEFAULT 0,
-    date_1ere_achat DATE,
+    date_premiere_achat DATE,
     point_fidelite INT DEFAULT 0,
     PRIMARY KEY(id_client)
 );
@@ -71,67 +71,67 @@ CREATE TABLE DEPOT(
 );
 
 CREATE TABLE DEPOSE(
-    num_depot INT AUTO_INCREMENT,
+    id_depose INT AUTO_INCREMENT,
     quantite_depot DECIMAL(10,2),
     date_depot DATE,
-    id_depot INT NOT NULL,
-    id_categorie_vetement INT NOT NULL,
-    id_client INT NOT NULL,
-    PRIMARY KEY(num_depot),
-    FOREIGN KEY(id_depot) REFERENCES DEPOT(id_depot),
-    FOREIGN KEY(id_categorie_vetement) REFERENCES CATEGORIE_VETEMENTS(id_categorie_vetement),
-    FOREIGN KEY(id_client) REFERENCES CLIENT(id_client)
+    depot_id INT NOT NULL,
+    categorie_vetement_id INT NOT NULL,
+    client_id INT NOT NULL,
+    PRIMARY KEY(id_depose),
+    FOREIGN KEY(depot_id) REFERENCES DEPOT(id_depot),
+    FOREIGN KEY(categorie_vetement_id) REFERENCES CATEGORIE_VETEMENTS(id_categorie_vetement),
+    FOREIGN KEY(client_id) REFERENCES CLIENT(id_client)
 );
 
 CREATE TABLE COLLECTE_VETEMENT(
     id_collecte_vetement INT AUTO_INCREMENT,
     date_collecte DATE,
     quantite_vetement DECIMAL(10,2),
-    id_collecte INT NOT NULL,
-    id_categorie_vetement INT NOT NULL,
+    collecte_id INT NOT NULL,
+    categorie_vetement_id INT NOT NULL,
     PRIMARY KEY(id_collecte_vetement),
-    FOREIGN KEY(id_collecte) REFERENCES COLLECTE(id_collecte),
-    FOREIGN KEY(id_categorie_vetement) REFERENCES CATEGORIE_VETEMENTS(id_categorie_vetement)
+    FOREIGN KEY(collecte_id) REFERENCES COLLECTE(id_collecte),
+    FOREIGN KEY(categorie_vetement_id) REFERENCES CATEGORIE_VETEMENTS(id_categorie_vetement)
 );
 
 CREATE TABLE ACHAT_VETEMENT(
     id_achat_vetement INT AUTO_INCREMENT,
     quantite_achete DECIMAL(10,2),
     achat_id INT NOT NULL,
-    id_categorie_vetement INT NOT NULL,
+    categorie_vetement_id INT NOT NULL,
     PRIMARY KEY(id_achat_vetement),
     FOREIGN KEY(achat_id) REFERENCES ACHAT(id_achat),
-    FOREIGN KEY(id_categorie_vetement) REFERENCES CATEGORIE_VETEMENTS(id_categorie_vetement)
+    FOREIGN KEY(categorie_vetement_id) REFERENCES CATEGORIE_VETEMENTS(id_categorie_vetement)
 );
 
 CREATE TABLE DISTANCE_ENTRE(
-    id_benne INT,
-    id_benne_1 INT,
+    benne_id INT,
+    benne_id_1 INT,
     distance_inter_benne DECIMAL(10,2),
-    PRIMARY KEY(id_benne, id_benne_1),
-    FOREIGN KEY(id_benne) REFERENCES BENNE(id_benne),
-    FOREIGN KEY(id_benne_1) REFERENCES BENNE(id_benne)
+    PRIMARY KEY(benne_id, benne_id_1),
+    FOREIGN KEY(benne_id) REFERENCES BENNE(id_benne),
+    FOREIGN KEY(benne_id_1) REFERENCES BENNE(id_benne)
 );
 
 CREATE TABLE ASSOCIEA(
-    id_collecte INT,
-    id_camionette INT,
-    PRIMARY KEY(id_collecte, id_camionette),
-    FOREIGN KEY(id_collecte) REFERENCES COLLECTE(id_collecte),
-    FOREIGN KEY(id_camionette) REFERENCES CAMIONETTE(id_camionette)
+    collecte_id INT,
+    camionette_id INT,
+    PRIMARY KEY(collecte_id, camionette_id),
+    FOREIGN KEY(collecte_id) REFERENCES COLLECTE(id_collecte),
+    FOREIGN KEY(camionette_id) REFERENCES CAMIONETTE(id_camionette)
 );
 
 CREATE TABLE RECUPERE(
-    id_benne INT,
-    id_collecte INT,
-    PRIMARY KEY(id_benne, id_collecte),
-    FOREIGN KEY(id_benne) REFERENCES BENNE(id_benne),
-    FOREIGN KEY(id_collecte) REFERENCES COLLECTE(id_collecte)
+    benne_id INT,
+    collecte_id INT,
+    PRIMARY KEY(benne_id, collecte_id),
+    FOREIGN KEY(benne_id) REFERENCES BENNE(id_benne),
+    FOREIGN KEY(collecte_id) REFERENCES COLLECTE(id_collecte)
 );
 
 
 -- Clients
-INSERT INTO CLIENT (nom, prenom, adresse, telephone, email, total_kg_achetes, date_1ere_achat, point_fidelite) VALUES
+INSERT INTO CLIENT (nom, prenom, adresse, telephone, email, total_kg_achetes, date_premiere_achat, point_fidelite) VALUES
 ('Dupont', 'Marie', '12 rue de la Paix, Paris', '0612345678', 'marie.dupont@email.fr', 45.50, '2024-01-15', 455),
 ('Martin', 'Pierre', '8 avenue des Lilas, Lyon', '0623456789', 'pierre.martin@email.fr', 32.00, '2024-02-20', 320),
 ('Bernard', 'Sophie', '5 boulevard Victor Hugo, Marseille', '0634567890', 'sophie.bernard@email.fr', 67.80, '2023-12-10', 678),
@@ -186,7 +186,7 @@ INSERT INTO DEPOT VALUES
 (5);
 
 -- Déposés
-INSERT INTO DEPOSE (quantite_depot, date_depot, id_depot, id_categorie_vetement, id_client) VALUES
+INSERT INTO DEPOSE (quantite_depot, date_depot, depot_id, categorie_vetement_id, client_id) VALUES
 (5.50, '2024-11-01', 1, 1, 1),
 (8.00, '2024-11-02', 2, 2, 2),
 (12.30, '2024-11-03', 3, 3, 3),
@@ -196,7 +196,7 @@ INSERT INTO DEPOSE (quantite_depot, date_depot, id_depot, id_categorie_vetement,
 (9.50, '2024-11-07', 2, 1, 3);
 
 -- Collecte de vêtements
-INSERT INTO COLLECTE_VETEMENT (date_collecte, quantite_vetement, id_collecte, id_categorie_vetement) VALUES
+INSERT INTO COLLECTE_VETEMENT (date_collecte, quantite_vetement, collecte_id, categorie_vetement_id) VALUES
 ('2024-11-01', 45.50, 1, 1),
 ('2024-11-01', 32.00, 1, 2),
 ('2024-11-05', 28.50, 2, 3),
@@ -207,7 +207,7 @@ INSERT INTO COLLECTE_VETEMENT (date_collecte, quantite_vetement, id_collecte, id
 ('2024-11-20', 47.30, 5, 2);
 
 -- Achat de vêtements
-INSERT INTO ACHAT_VETEMENT (quantite_achete, achat_id, id_categorie_vetement) VALUES
+INSERT INTO ACHAT_VETEMENT (quantite_achete, achat_id, categorie_vetement_id) VALUES
 (8.50, 1, 1),
 (7.00, 1, 2),
 (15.00, 2, 3),
@@ -219,7 +219,7 @@ INSERT INTO ACHAT_VETEMENT (quantite_achete, achat_id, id_categorie_vetement) VA
 (12.50, 5, 3);
 
 -- Distances entre bennes
-INSERT INTO DISTANCE_ENTRE (id_benne, id_benne_1, distance_inter_benne) VALUES
+INSERT INTO DISTANCE_ENTRE (benne_id, benne_id_1, distance_inter_benne) VALUES
 (1, 2, 465.50),
 (1, 3, 775.20),
 (1, 4, 678.30),
@@ -232,7 +232,7 @@ INSERT INTO DISTANCE_ENTRE (id_benne, id_benne_1, distance_inter_benne) VALUES
 (4, 5, 542.10);
 
 -- Association collecte-camionette
-INSERT INTO ASSOCIEA (id_collecte, id_camionette) VALUES
+INSERT INTO ASSOCIEA (collecte_id, camionette_id) VALUES
 (1, 1),
 (2, 2),
 (3, 3),
@@ -240,7 +240,7 @@ INSERT INTO ASSOCIEA (id_collecte, id_camionette) VALUES
 (5, 2);
 
 -- Récupération benne-collecte
-INSERT INTO RECUPERE (id_benne, id_collecte) VALUES
+INSERT INTO RECUPERE (benne_id, collecte_id) VALUES
 (1, 1),
 (2, 1),
 (3, 2),

@@ -1,26 +1,29 @@
-        {% extends "layout.html" %}
-        {% block title %}
-        <title>Collecte_vetements modification</title>
-        {% endblock %}
-        {% block body %}
-            <div class="container mt-4">
-                <h1>Formulaire de collecte</h1>
-                <form action="/Collecte-vetements/edit" method="post">
-                    <input type="hidden" name="id_collecte_vetement" value="{{ Collecte.id_collecte_vetement }}">
-                    <div class="mb-3">
-                        <label for="id_client" class="form-label">ID de la collecte :</label>
-                        <input type="number" class="form-control" id="id_collecte_vetement" name="id_collecte_vetement" value="{{ Collecte.id_collecte_vetement }}" placeholder="Entrez l'ID du client" required >
-                    </div>
-                    <div class="mb-3">
-                    <label class="form-label">Quantité de vêtements :</label>
-                    <input type="number" step="0.1" class="form-control" name="quantite_vetement" value="{{ Collecte.quantite_vetement }}" required>
-                </div>
+{% extends "layout.html" %}
+{% block title %}
+<title>Collecte_vetements modification</title>
+{% endblock %}
+{% block body %}
+<div class="container mt-4">
+    <h1>Formulaire de collecte</h1>
+    <form action="/Collecte-vetements/edit" method="post">
+        <input type="hidden" name="collecte_id" value="{{ Collecte.collecte_id }}">
+        <input type="hidden" name="categorie_vetement_id" value="{{ Collecte.categorie_vetement_id }}">
+        <div class="mb-3">
+            <label for="id_client" class="form-label">ID de la collecte :</label>
+            <input type="number" class="form-control" id="id_collecte_vetement" name="id_collecte_vetement"
+                value="{{ Collecte.id_collecte_vetement }}" placeholder="Entrez l'ID du client" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Quantité de vêtements :</label>
+            <input type="number" step="0.1" class="form-control" name="quantite_vetement"
+                value="{{ Collecte.quantite_vetement }}">
+        </div>
 
-                   <div class="mb-3">
-                    <label class="form-label">Date de collecte :</label>
-                    <input type="date" class="form-control" name="date_collecte" value="{{ Collecte.date_collecte }}" required>
-                   </div>
-                    <button type="submit" class="btn btn-primary">Enregistrer</button>
-                </form>
-            </div>
-        {% endblock %}
+        <div class="mb-3">
+            <label class="form-label">Date de collecte :</label>
+            <input type="date" class="form-control" name="date_collecte" value="{{ Collecte.date_collecte }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+    </form>
+</div>
+{% endblock %}

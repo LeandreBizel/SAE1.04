@@ -10,8 +10,8 @@
     <form action="/Achats-vetements/add" method="post">
 
         <div class="mb-3">
-            <label for="id_categorie_vetement" class="form-label">Catégorie du vêtement :</label>
-            <select class="form-select" name="id_categorie_vetement" required>
+            <label for="categorie_vetement_id" class="form-label">Catégorie du vêtement :</label>
+            <select class="form-select" name="categorie_vetement_id" required>
                 {% for cat in categories %}
                 <option value="{{ cat.id_categorie_vetement }}">{{ cat.nom_vetement }}</option>
                 {% endfor %}

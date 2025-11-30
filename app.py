@@ -165,7 +165,7 @@ def show_achat_vetements():
             av.id_achat_vetement,
             av.quantite_achete,
             av.achat_id,
-            av.id_categorie_vetement,
+            av.categorie_vetement_id,
             c.nom_vetement,
             a.date_achat,
             a.client_id,
@@ -173,7 +173,7 @@ def show_achat_vetements():
             cl.prenom
         FROM ACHAT_VETEMENT av
         JOIN CATEGORIE_VETEMENTS c 
-            ON av.id_categorie_vetement = c.id_categorie_vetement
+            ON av.categorie_vetement_id = c.id_categorie_vetement
         JOIN ACHAT a
             ON av.achat_id = a.id_achat
         JOIN CLIENT cl
@@ -208,18 +208,18 @@ def edit_achat_vetement():
 def valid_edit_achat_vetement():
     id_achat_vetement = request.form.get('id_achat_vetement')
     quantite_achete = request.form.get('quantite_achete')
-    id_categorie_vetement = request.form.get('id_categorie_vetement')
+    categorie_vetement_id = request.form.get('categorie_vetement_id')
     achat_id = request.form.get('achat_id')
 
     mycursor = get_db().cursor()
     sql = """
         UPDATE ACHAT_VETEMENT
         SET quantite_achete = %s,
-            id_categorie_vetement = %s,
+            categorie_vetement_id = %s,
             achat_id = %s
         WHERE id_achat_vetement = %s
     """
-    mycursor.execute(sql, (quantite_achete, id_categorie_vetement, achat_id, id_achat_vetement))
+    mycursor.execute(sql, (quantite_achete, categorie_vetement_id, achat_id, id_achat_vetement))
     
     sql_somme_poids = "SELECT SUM(quantite_achete) as poids FROM ACHAT_VETEMENT WHERE achat_id = %s"
     mycursor.execute(sql_somme_poids, (achat_id,))
@@ -281,20 +281,16 @@ def add_achat_vetement():
 def valid_add_achat_vetement():
     print("Ajout d'un nouvel achat de vêtement...")
     achat_id = request.form.get('achat_id')
-    quantite_achete = request.form.get('quantite_achete')
-    if not quantite_achete:
-        quantite_achete = 0
-    id_categorie_vetement = request.form.get('id_categorie_vetement')
-    date_achat = request.form.get('date_achat')
-    if not date_achat:
-        date_achat = date.today().strftime("%Y-%m-%d")
+    quantite_achete = request.form.get('quantite_achete') or 0
+    categorie_vetement_id = request.form.get('categorie_vetement_id')
+    date_achat = request.form.get('date_achat') or date.today().strftime("%Y-%m-%d")
     print(f"ID achat = {achat_id}, quantité = {quantite_achete}, date = {date_achat}")
     mycursor = get_db().cursor()
     sql_insert = """
-        INSERT INTO ACHAT_VETEMENT (achat_id, id_categorie_vetement, quantite_achete)
+        INSERT INTO ACHAT_VETEMENT (achat_id, categorie_vetement_id, quantite_achete)
         VALUES (%s, %s, %s)
     """
-    mycursor.execute(sql_insert, (achat_id, id_categorie_vetement, quantite_achete))
+    mycursor.execute(sql_insert, (achat_id, categorie_vetement_id, quantite_achete))
     sql_update_date = "UPDATE ACHAT SET date_achat = %s WHERE id_achat = %s"
     mycursor.execute(sql_update_date, (date_achat, achat_id))
     sql_somme_poids = "SELECT SUM(quantite_achete) as poids FROM ACHAT_VETEMENT WHERE achat_id = %s"
@@ -314,7 +310,7 @@ def show_achat_vetement_etat():
     sql = '''
         SELECT c.nom_vetement, SUM(av.quantite_achete) as total_quantite
         FROM ACHAT_VETEMENT av
-        JOIN CATEGORIE_VETEMENTS c ON av.id_categorie_vetement = c.id_categorie_vetement
+        JOIN CATEGORIE_VETEMENTS c ON av.categorie_vetement_id = c.id_categorie_vetement
         GROUP BY c.nom_vetement
         ORDER BY total_quantite DESC
     '''
@@ -331,7 +327,7 @@ def show_achat_vetement_etat_param():
     sql_global = '''
         SELECT c.nom_vetement, SUM(av.quantite_achete) as total_quantite
         FROM ACHAT_VETEMENT av
-        JOIN CATEGORIE_VETEMENTS c ON av.id_categorie_vetement = c.id_categorie_vetement
+        JOIN CATEGORIE_VETEMENTS c ON av.categorie_vetement_id = c.id_categorie_vetement
         GROUP BY c.nom_vetement
         ORDER BY total_quantite DESC
     '''
@@ -340,7 +336,7 @@ def show_achat_vetement_etat_param():
     sql_filtered = '''
         SELECT c.nom_vetement, SUM(av.quantite_achete) as total_quantite, AVG(av.quantite_achete) as moy_quantite, COUNT(av.id_achat_vetement) as nb_achats
         FROM ACHAT_VETEMENT av
-        JOIN CATEGORIE_VETEMENTS c ON av.id_categorie_vetement = c.id_categorie_vetement
+        JOIN CATEGORIE_VETEMENTS c ON av.categorie_vetement_id = c.id_categorie_vetement
         GROUP BY c.nom_vetement
         HAVING total_quantite BETWEEN %s AND %s
         ORDER BY total_quantite DESC
@@ -355,7 +351,7 @@ def show_achat_vetement_etat_param():
 @app.route('/Collecte-vetements/show')
 def show_collecte_vetements():
     mycursor = get_db().cursor()
-    sql = ''' SELECT cv.id_collecte_vetement,cv.date_collecte, cv.quantite_vetement, cv.id_collecte, cv.id_categorie_vetement, c.nom_vetement FROM COLLECTE_VETEMENT cv JOIN CATEGORIE_VETEMENTS c ON cv.id_categorie_vetement = c.id_categorie_vetement'''
+    sql = ''' SELECT cv.id_collecte_vetement,cv.date_collecte, cv.quantite_vetement, cv.collecte_id, cv.categorie_vetement_id, c.nom_vetement FROM COLLECTE_VETEMENT cv JOIN CATEGORIE_VETEMENTS c ON cv.categorie_vetement_id = c.id_categorie_vetement'''
     mycursor.execute(sql)
     Collecte = mycursor.fetchall()
     return render_template('Tables/Collecte-vetements.html', Collecte=Collecte)
@@ -388,11 +384,11 @@ def valid_add_collecte_vetements():
     quantite_vetement = request.form.get('quantite_vetement')
     date_collecte = request.form.get('date_collecte')
     collecte_id = request.form.get('collecte_id')
-    id_categorie_vetement = request.form.get('id_categorie_vetement')
+    categorie_vetement_id = request.form.get('categorie_vetement_id')
     print(f"quantité = {quantite_vetement}, date = {date_collecte}")
     mycursor = get_db().cursor()
-    sql = """ INSERT INTO COLLECTE_VETEMENT (id_collecte,quantite_vetement, date_collecte,id_categorie_vetement) VALUES (%s, %s,%s,%s)"""
-    tuple_insert = (collecte_id, quantite_vetement, date_collecte,id_categorie_vetement)
+    sql = """ INSERT INTO COLLECTE_VETEMENT (collecte_id,quantite_vetement, date_collecte,categorie_vetement_id) VALUES (%s, %s,%s,%s)"""
+    tuple_insert = (collecte_id, quantite_vetement, date_collecte,categorie_vetement_id)
     mycursor.execute(sql, tuple_insert)
     get_db().commit()
     flash("Nouvelle collecte ajoutée avec succès !")
@@ -427,13 +423,13 @@ def valid_edit_collecte_vetements():
 def show_depose():
     cursor = get_db().cursor()
     cursor.execute('''
-        SELECT d.num_depot, d.id_depot, d.quantite_depot, d.date_depot,
+        SELECT d.id_depose, d.depot_id, d.quantite_depot, d.date_depot,
                c.nom AS client_nom, c.prenom AS client_prenom, c.id_client,
                cv.nom_vetement, cv.id_categorie_vetement
         FROM DEPOSE d
-        JOIN CLIENT c ON d.id_client = c.id_client
-        JOIN CATEGORIE_VETEMENTS cv ON d.id_categorie_vetement = cv.id_categorie_vetement
-        ORDER BY d.num_depot
+        JOIN CLIENT c ON d.client_id = c.id_client
+        JOIN CATEGORIE_VETEMENTS cv ON d.categorie_vetement_id = cv.id_categorie_vetement
+        ORDER BY d.id_depose
     ''')
     depose_list = cursor.fetchall()
     return render_template('Tables/Depose.html', depose_list=depose_list)
@@ -448,21 +444,22 @@ def add_depose():
     categories = cursor.fetchall()
     cursor.execute('SELECT id_depot FROM DEPOT')
     depots = cursor.fetchall()
-    return render_template('Tables/Depose_add.html', clients=clients, categories=categories, depots=depots)
+    date_today = date.today().strftime("%Y-%m-%d")
+    return render_template('Tables/Depose_add.html', clients=clients, categories=categories, depots=depots, date_today=date_today)
 
 
 @app.route('/Depose/add', methods=['POST'])
 def valid_add_depose():
     cursor = get_db().cursor()
     cursor.execute('''
-        INSERT INTO DEPOSE(quantite_depot, date_depot, id_depot, id_categorie_vetement, id_client)
+        INSERT INTO DEPOSE(quantite_depot, date_depot, depot_id, categorie_vetement_id, client_id)
         VALUES (%s, %s, %s, %s, %s)
     ''', (
         request.form.get('quantite_depot'),
         request.form.get('date_depot'),
-        request.form.get('id_depot'),
-        request.form.get('id_categorie_vetement'),
-        request.form.get('id_client')
+        request.form.get('depot_id'),
+        request.form.get('categorie_vetement_id'),
+        request.form.get('client_id')
     ))
     get_db().commit()
     return redirect('/Depose/show')
@@ -471,7 +468,7 @@ def valid_add_depose():
 @app.route('/Depose/edit', methods=['GET'])
 def edit_depose():
     cursor = get_db().cursor()
-    cursor.execute('SELECT * FROM DEPOSE WHERE num_depot=%s', (request.args.get('id'),))
+    cursor.execute('SELECT * FROM DEPOSE WHERE id_depose=%s', (request.args.get('id'),))
     depose = cursor.fetchone()
     cursor.execute('SELECT id_client, nom, prenom FROM CLIENT')
     clients = cursor.fetchall()
@@ -487,16 +484,16 @@ def valid_edit_depose():
     cursor = get_db().cursor()
     cursor.execute('''
         UPDATE DEPOSE
-        SET quantite_depot=%s, date_depot=%s, id_depot=%s,
-            id_categorie_vetement=%s, id_client=%s
-        WHERE num_depot=%s
+        SET quantite_depot=%s, date_depot=%s, depot_id=%s,
+            categorie_vetement_id=%s, client_id=%s
+        WHERE id_depose=%s
     ''', (
         request.form.get('quantite_depot'),
         request.form.get('date_depot'),
-        request.form.get('id_depot'),
-        request.form.get('id_categorie_vetement'),
-        request.form.get('id_client'),
-        request.form.get('num_depot')
+        request.form.get('depot_id'),
+        request.form.get('categorie_vetement_id'),
+        request.form.get('client_id'),
+        request.form.get('id_depose')
     ))
     get_db().commit()
     return redirect('/Depose/show')
@@ -505,7 +502,7 @@ def valid_edit_depose():
 @app.route('/Depose/delete')
 def delete_depose():
     cursor = get_db().cursor()
-    cursor.execute('DELETE FROM DEPOSE WHERE num_depot=%s', (request.args.get('id'),))
+    cursor.execute('DELETE FROM DEPOSE WHERE id_depose=%s', (request.args.get('id'),))
     get_db().commit()
     return redirect('/Depose/show')
 
@@ -517,31 +514,13 @@ def show_etat_depose():
     sql = '''
         SELECT c.id_client, c.nom, c.prenom, SUM(d.quantite_depot) AS total_depose
         FROM DEPOSE d
-        JOIN CLIENT c ON d.id_client = c.id_client
+        JOIN CLIENT c ON d.client_id = c.id_client
         GROUP BY c.id_client, c.nom, c.prenom
         ORDER BY total_depose DESC;
     '''
     cursor.execute(sql)
     etat_list = cursor.fetchall()
     return render_template('Tables/Depose_etat.html', etat_list=etat_list)
-
-@app.route('/Depose/etat_depots_client')
-def etat_depots_client():
-    cursor = get_db().cursor()
-    sql = '''
-        SELECT c.id_client, c.nom, c.prenom,
-               SUM(d.quantite_depot) AS total_depose,
-               COUNT(d.num_depot) AS nb_depots
-        FROM DEPOSE d
-        JOIN CLIENT c ON d.id_client = c.id_client
-        GROUP BY c.id_client, c.nom, c.prenom
-        ORDER BY total_depose DESC;
-    '''
-    cursor.execute(sql)
-    etat_list = cursor.fetchall()
-    return render_template('Tables/Depose_etat.html', etat_list=etat_list)
-
-
 
 
 
@@ -549,5 +528,4 @@ def etat_depots_client():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
 

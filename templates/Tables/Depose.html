@@ -10,8 +10,7 @@
 {% endblock %}
 
 {% block body %}
-<h1 style="text-align: center; font-size: 50px; margin: 20px;">Table Dépôts</h1>
-
+<h1 style="text-align: center;font-size: 50px;margin: 20px;">Table Dépôts</h1>
 <a href="/Depose/add" class="btn btn-lg btn-success border-3 m-3" style="border-radius: 10px;">Ajouter un dépôt</a>
 <a href="/Depose/etat" class="btn btn-sm btn-primary border-3 m-3" style="border-radius: 10px;">Statistiques</a>
 
@@ -30,15 +29,15 @@
     <tbody>
         {% for d in depose_list %}
         <tr>
-            <td class="text-center">{{ d.num_depot }}</td>
-            <td class="text-center">{{ d.id_depot }}</td>
-            <td class="text-center">{{ d.client_nom }} {{ d.client_prenom }} ({{ d.id_client }})</td>
-            <td class="text-center">{{ d.nom_vetement }} ({{ d.id_categorie_vetement }})</td>
+            <td class="text-center">{{ d.id_depose }}</td>
+            <td class="text-center">{{ d.depot_id }}</td>
+            <td class="text-center">{{ d.client_nom }} {{ d.client_prenom }} ({{ d.client_id }})</td>
+            <td class="text-center">{{ d.nom_vetement }} ({{ d.categorie_vetement_id }})</td>
             <td class="text-center fw-semibold">{{ d.quantite_depot }} kg</td>
             <td class="text-center">{{ d.date_depot }}</td>
             <td class="text-center">
-                <a href="/Depose/edit?id={{ d.num_depot }}" class="btn btn-warning btn-sm me-1">Éditer</a>
-                <a href="/Depose/delete?id={{ d.num_depot }}" class="btn btn-danger btn-sm">Supprimer</a>
+                <a href="/Depose/edit?id={{ d.id_depose }}" class="btn btn-warning btn-sm me-1">Éditer</a>
+                <a href="/Depose/delete?id={{ d.id_depose }}" class="btn btn-danger btn-sm">Supprimer</a>
             </td>
         </tr>
         {% endfor %}
