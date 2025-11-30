@@ -513,6 +513,8 @@ def delete_depose():
 @app.route('/Depose/etat')
 def show_etat_depose():
     cursor = get_db().cursor()
+    
+  
     cursor.execute('''
         SELECT c.id_client, c.nom, c.prenom, SUM(d.quantite_depot) AS total_depose
         FROM DEPOSE d
@@ -520,13 +522,9 @@ def show_etat_depose():
         GROUP BY c.id_client, c.nom, c.prenom
         ORDER BY total_depose DESC
     ''')
-    etat_list = cursor.fetchall()
-    return render_template('Tables/Depose_etat.html', etat_list=etat_list)
-
-
-@app.route('/Depose/etat2')
-def show_etat_depose2():
-    cursor = get_db().cursor()
+    total_depose_list = cursor.fetchall()
+    
+    # Stat 2
     cursor.execute('''
         SELECT c.id_client, c.nom, c.prenom, COUNT(d.id_depose) AS nb_depots
         FROM DEPOSE d
@@ -534,8 +532,10 @@ def show_etat_depose2():
         GROUP BY c.id_client, c.nom, c.prenom
         ORDER BY nb_depots DESC
     ''')
-    etat2_list = cursor.fetchall()
-    return render_template('Tables/Depose_etat2.html', etat2_list=etat2_list)
+    nb_depots_list = cursor.fetchall()
+    
+    return render_template('Tables/Depose_etat.html', total_depose_list=total_depose_list, nb_depots_list=nb_depots_list)
+
 
 
 # ------------------- FIN DEPOSE -------------------
@@ -544,6 +544,7 @@ def show_etat_depose2():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
