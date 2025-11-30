@@ -509,7 +509,7 @@ def delete_depose():
     return redirect('/Depose/show')
 
 
-# Route existante (total déposé par client)
+
 @app.route('/Depose/etat')
 def show_etat_depose():
     cursor = get_db().cursor()
@@ -544,6 +544,7 @@ def show_etat_depose2():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
