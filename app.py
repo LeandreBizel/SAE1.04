@@ -509,6 +509,7 @@ def delete_depose():
     return redirect('/Depose/show')
 
 
+# Route existante (total déposé par client)
 @app.route('/Depose/etat')
 def show_etat_depose():
     cursor = get_db().cursor()
@@ -522,12 +523,28 @@ def show_etat_depose():
     etat_list = cursor.fetchall()
     return render_template('Tables/Depose_etat.html', etat_list=etat_list)
 
+
+@app.route('/Depose/etat2')
+def show_etat_depose2():
+    cursor = get_db().cursor()
+    cursor.execute('''
+        SELECT c.id_client, c.nom, c.prenom, COUNT(d.id_depose) AS nb_depots
+        FROM DEPOSE d
+        JOIN CLIENT c ON d.client_id = c.id_client
+        GROUP BY c.id_client, c.nom, c.prenom
+        ORDER BY nb_depots DESC
+    ''')
+    etat2_list = cursor.fetchall()
+    return render_template('Tables/Depose_etat2.html', etat2_list=etat2_list)
+
+
 # ------------------- FIN DEPOSE -------------------
 
 
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
