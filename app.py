@@ -258,9 +258,7 @@ def valid_add_achat_vetement():
     flash("Nouvel achat de vêtement ajouté avec succès !")
     return redirect('/Achats-vetements/show')
 
-@app.route('/Depose/show')
-def show_depose():
-    return render_template('Tables/Depose.html')
+
 
 
 # ------------------- COLLECTE VETEMENTS -------------------
@@ -444,6 +442,7 @@ def show_etat_depose():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
