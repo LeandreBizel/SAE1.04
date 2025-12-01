@@ -418,6 +418,56 @@ def valid_edit_collecte_vetements():
     flash(f"Collecte {id_collecte_vetement} modifiée avec succès !")
     return redirect('/Collecte-vetements/show')
 
+@app.route('/Collecte-vetements/etat', methods=['GET'])
+def show_collecte_vetement_etat():
+    mycursor = get_db().cursor()
+    sql = '''
+        SELECT c.nom_vetement, SUM(cv.quantite_vetement) AS total_quantite
+        FROM COLLECTE_VETEMENT cv
+        JOIN CATEGORIE_VETEMENTS c ON cv.categorie_vetement_id = c.id_categorie_vetement
+        GROUP BY c.nom_vetement
+        ORDER BY total_quantite DESC
+    '''
+    mycursor.execute(sql)
+    global_stats = mycursor.fetchall()
+    return render_template('Tables/Collecte-vetements_etat.html', global_stats=global_stats)
+
+@app.route('/Collecte-vetements/etat', methods=['POST'])
+def show_collecte_vetement_etat_param():
+    min_quantite = request.form.get('min_quantite')
+    max_quantite = request.form.get('max_quantite')
+    mycursor = get_db().cursor()
+    sql_global = '''
+        SELECT c.nom_vetement, SUM(cv.quantite_vetement) AS total_quantite
+        FROM COLLECTE_VETEMENT cv
+        JOIN CATEGORIE_VETEMENTS c ON cv.categorie_vetement_id = c.id_categorie_vetement
+        GROUP BY c.nom_vetement
+        ORDER BY total_quantite DESC
+    '''
+    mycursor.execute(sql_global)
+    global_stats = mycursor.fetchall()
+    sql_filtered = '''
+        SELECT 
+            c.nom_vetement, 
+            SUM(cv.quantite_vetement) AS total_quantite,
+            AVG(cv.quantite_vetement) AS moy_quantite,
+            COUNT(cv.id_collecte_vetement) AS nb_collectes
+        FROM COLLECTE_VETEMENT cv
+        JOIN CATEGORIE_VETEMENTS c ON cv.categorie_vetement_id = c.id_categorie_vetement
+        GROUP BY c.nom_vetement
+        HAVING total_quantite BETWEEN %s AND %s
+        ORDER BY total_quantite DESC
+    '''
+    mycursor.execute(sql_filtered, (min_quantite, max_quantite))
+    stats_filtrees = mycursor.fetchall()
+    return render_template(
+        'Tables/Collecte-vetements_etat.html',
+        global_stats=global_stats,
+        stats_filtrees=stats_filtrees,
+        min_quantite=min_quantite,
+        max_quantite=max_quantite
+    )
+
 # ------------------- DEPOSE -------------------
 
 @app.route('/Depose/show')
@@ -544,6 +594,7 @@ def show_etat_depose():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
