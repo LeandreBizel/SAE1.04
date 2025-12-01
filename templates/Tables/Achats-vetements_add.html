@@ -12,8 +12,8 @@
         <div class="mb-3">
             <label for="categorie_vetement_id" class="form-label">Catégorie du vêtement :</label>
             <select class="form-select" name="categorie_vetement_id" required>
-                {% for cat in categories %}
-                <option value="{{ cat.id_categorie_vetement }}">{{ cat.nom_vetement }}</option>
+                {% for categorie in categories %}
+                <option value="{{ categorie.id_categorie_vetement }}">{{ categorie.nom_vetement }}</option>
                 {% endfor %}
             </select>
         </div>
