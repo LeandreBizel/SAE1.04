@@ -513,9 +513,9 @@ def valid_add_depose():
     ''', (
         request.form.get('quantite_depot'),
         request.form.get('date_depot'),
-        request.form.get('id_depot'),
-        request.form.get('id_categorie_vetement'),
-        request.form.get('id_client')
+        request.form.get('depot_id'),
+        request.form.get('categorie_vetement_id'),
+        request.form.get('client_id')
     ))
     get_db().commit()
     return redirect('/Depose/show')
@@ -546,9 +546,9 @@ def valid_edit_depose():
     ''', (
         request.form.get('quantite_depot'),
         request.form.get('date_depot'),
-        request.form.get('id_depot'),
-        request.form.get('id_categorie_vetement'),
-        request.form.get('id_client'),
+        request.form.get('depot_id'),
+        request.form.get('categorie_vetement_id'),
+        request.form.get('client_id'),
         request.form.get('id_depose')
     ))
     get_db().commit()
@@ -563,12 +563,11 @@ def delete_depose():
     return redirect('/Depose/show')
 
 
-
 @app.route('/Depose/etat')
 def show_etat_depose():
     cursor = get_db().cursor()
     
-  
+    # Total depot
     cursor.execute('''
         SELECT c.id_client, c.nom, c.prenom, SUM(d.quantite_depot) AS total_depose
         FROM DEPOSE d
@@ -578,7 +577,7 @@ def show_etat_depose():
     ''')
     total_depose_list = cursor.fetchall()
     
-    # Stat 2
+    # nbr de depit 
     cursor.execute('''
         SELECT c.id_client, c.nom, c.prenom, COUNT(d.id_depose) AS nb_depots
         FROM DEPOSE d
@@ -590,14 +589,12 @@ def show_etat_depose():
     
     return render_template('Tables/Depose_etat.html', total_depose_list=total_depose_list, nb_depots_list=nb_depots_list)
 
-
-
 # ------------------- FIN DEPOSE -------------------
-
 
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
