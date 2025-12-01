@@ -279,12 +279,10 @@ def add_achat_vetement():
 
 @app.route('/Achats-vetements/add', methods=['POST'])
 def valid_add_achat_vetement():
-    print("Ajout d'un nouvel achat de vêtement...")
     achat_id = request.form.get('achat_id')
     quantite_achete = request.form.get('quantite_achete') or 0
     categorie_vetement_id = request.form.get('categorie_vetement_id')
     date_achat = request.form.get('date_achat') or date.today().strftime("%Y-%m-%d")
-    print(f"ID achat = {achat_id}, quantité = {quantite_achete}, date = {date_achat}")
     mycursor = get_db().cursor()
     sql_insert = """
         INSERT INTO ACHAT_VETEMENT (achat_id, categorie_vetement_id, quantite_achete)
@@ -299,6 +297,12 @@ def valid_add_achat_vetement():
     poids_total = result['poids']
     sql_update_poids = "UPDATE ACHAT SET poids_total = %s WHERE id_achat = %s"
     mycursor.execute(sql_update_poids, (poids_total, achat_id))
+    sql_somme_montant = "SELECT SUM(AV.quantite_achete * CV.prix_kg) as montant FROM ACHAT_VETEMENT AV JOIN CATEGORIE_VETEMENTS CV ON AV.categorie_vetement_id = CV.id_categorie_vetement WHERE achat_id = %s"
+    mycursor.execute(sql_somme_montant, (achat_id,))
+    result = mycursor.fetchone()
+    montant_total = result['montant']
+    sql_update_montant_total = "UPDATE ACHAT SET montant_total = %s WHERE id_achat = %s"
+    mycursor.execute(sql_update_montant_total, (montant_total, achat_id))
     get_db().commit()
     return redirect('/Achats-vetements/show')
 
@@ -594,6 +598,7 @@ def show_etat_depose():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
