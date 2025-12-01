@@ -12,9 +12,8 @@
 {% block body %}
 <div class="container mt-4">
     <h1>Ajouter un dépôt</h1>
-    <form action="/Depose/add" method="POST">
+    <form action="/Depose/valid_add" method="POST">
 
-        
         <div class="mb-3">
             <label for="client_id" class="form-label">Client :</label>
             <select name="client_id" id="client_id" class="form-select" required>
@@ -27,7 +26,6 @@
             </select>
         </div>
 
-        
         <div class="mb-3">
             <label for="categorie_vetement_id" class="form-label">Catégorie du vêtement :</label>
             <select name="categorie_vetement_id" id="categorie_vetement_id" class="form-select" required>
@@ -40,7 +38,6 @@
             </select>
         </div>
 
-        
         <div class="mb-3">
             <label for="depot_id" class="form-label">Dépôt :</label>
             <select name="depot_id" id="depot_id" class="form-select" required>
@@ -53,14 +50,11 @@
             </select>
         </div>
 
-        
-        
         <div class="mb-3">
             <label for="quantite_depot" class="form-label">Quantité déposée (kg) :</label>
             <input type="number" name="quantite_depot" id="quantite_depot" class="form-control" required>
         </div>
 
-        
         <div class="mb-3">
             <label for="date_depot" class="form-label">Date dépôt :</label>
             <input type="date" name="date_depot" id="date_depot" class="form-control" value="{{ date_today }}" required>
