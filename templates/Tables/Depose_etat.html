@@ -13,39 +13,44 @@
 <h1 style="text-align: center; font-size: 50px; margin: 20px;">Statistiques Dépôts</h1>
 <a href="/Depose/show" class="btn btn-secondary m-3" style="border-radius: 10px;">Retour à la liste</a>
 
-<h3>Total déposé par client</h3>
-<table class="table table-hover table-bordered table-sm align-middle shadow-sm">
-    <thead class="table-dark">
-        <tr class="text-center">
-            <th>Client</th>
-            <th>Total déposé (kg)</th>
-        </tr>
-    </thead>
-    <tbody>
+<!-- Cartes : Total déposé par client -->
+<div class="container-fluid m-3" style="overflow-x: hidden;">
+    <div class="row justify-content-center">
         {% for e in total_depose_list %}
-        <tr>
-            <td class="text-center">{{ e.nom }} {{ e.prenom }}</td>
-            <td class="text-center fw-semibold">{{ e.total_depose }} kg</td>
-        </tr>
+        <div class="col-md-2 mb-3">
+            <div class="card shadow-lg border-0" style="align-content: center; justify-content: center">
+                <div class="card-header text-dark text-center">
+                    <h5 class="card-title fw-bold mb-0">{{ e.nom }} {{ e.prenom }}</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="alert alert-secondary p-2">
+                        <p class="card-text mb-0 fs-5"><strong>Total :</strong> {{ e.total_depose }} kg</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         {% endfor %}
-    </tbody>
-</table>
+    </div>
+</div>
 
-<h3>Nombre de dépôts par client</h3>
-<table class="table table-hover table-bordered table-sm align-middle shadow-sm mt-4">
-    <thead class="table-dark">
-        <tr class="text-center">
-            <th>Client</th>
-            <th>Nombre de dépôts</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for e in nb_depots_list %}
-        <tr>
-            <td class="text-center">{{ e.nom }} {{ e.prenom }}</td>
-            <td class="text-center fw-semibold">{{ e.nb_depots }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<!-- Tableau : Quantité moyenne par dépôt par client -->
+<div class="container mt-4">
+    <h3>Quantité moyenne déposée par client</h3>
+    <table class="table table-hover table-bordered table-sm align-middle shadow-sm">
+        <thead class="table-dark">
+            <tr class="text-center">
+                <th>Client</th>
+                <th>Quantité moyenne déposée (kg)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in moyenne_depot_list %}
+            <tr>
+                <td class="text-center">{{ e.nom }} {{ e.prenom }}</td>
+                <td class="text-center fw-semibold">{{ e.moyenne_depot }} kg</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
