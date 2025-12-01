@@ -491,69 +491,107 @@ def show_depose():
     return render_template('Tables/Depose.html', depose_list=depose_list)
 
 
-@app.route('/Depose/add', methods=['GET'])
+
+# ---------- AJOUT
+
+@app.route('/Depose/add')
 def add_depose():
     cursor = get_db().cursor()
+
     cursor.execute('SELECT id_client, nom, prenom FROM CLIENT')
     clients = cursor.fetchall()
+
     cursor.execute('SELECT id_categorie_vetement, nom_vetement FROM CATEGORIE_VETEMENTS')
     categories = cursor.fetchall()
+
     cursor.execute('SELECT id_depot FROM DEPOT')
     depots = cursor.fetchall()
+
     date_today = date.today().strftime("%Y-%m-%d")
-    return render_template('Tables/Depose_add.html', clients=clients, categories=categories, depots=depots, date_today=date_today)
+
+    return render_template(
+        'Tables/Depose_add.html',
+        clients=clients,
+        categories=categories,
+        depots=depots,
+        date_today=date_today
+    )
 
 
-@app.route('/Depose/add', methods=['POST'])
+@app.route('/Depose/valid_add', methods=['POST'])
 def valid_add_depose():
     cursor = get_db().cursor()
+
+    quantite = request.form['quantite_depot']
+    date_depot = request.form['date_depot']
+    depot_id = request.form['depot_id']
+    categorie = request.form['categorie_vetement_id']
+    client = request.form['client_id']
+
     cursor.execute('''
         INSERT INTO DEPOSE (quantite_depot, date_depot, depot_id, categorie_vetement_id, client_id)
         VALUES (%s, %s, %s, %s, %s)
-    ''', (
-        request.form.get('quantite_depot'),
-        request.form.get('date_depot'),
-        request.form.get('depot_id'),
-        request.form.get('categorie_vetement_id'),
-        request.form.get('client_id')
-    ))
+    ''', (quantite, date_depot, depot_id, categorie, client))
+
     get_db().commit()
     return redirect('/Depose/show')
 
 
-@app.route('/Depose/edit', methods=['GET'])
+
+# ---------- EDIT 
+
+@app.route('/Depose/edit')
 def edit_depose():
     cursor = get_db().cursor()
+
     cursor.execute('SELECT * FROM DEPOSE WHERE id_depose=%s', (request.args.get('id'),))
     depose = cursor.fetchone()
+
     cursor.execute('SELECT id_client, nom, prenom FROM CLIENT')
     clients = cursor.fetchall()
+
     cursor.execute('SELECT id_categorie_vetement, nom_vetement FROM CATEGORIE_VETEMENTS')
     categories = cursor.fetchall()
+
     cursor.execute('SELECT id_depot FROM DEPOT')
     depots = cursor.fetchall()
-    return render_template('Tables/Depose_edit.html', depose=depose, clients=clients, categories=categories, depots=depots)
+
+    return render_template(
+        'Tables/Depose_edit.html',
+        depose=depose,
+        clients=clients,
+        categories=categories,
+        depots=depots
+    )
 
 
-@app.route('/Depose/edit', methods=['POST'])
+@app.route('/Depose/valid_edit', methods=['POST'])
 def valid_edit_depose():
     cursor = get_db().cursor()
+
     cursor.execute('''
         UPDATE DEPOSE
-        SET quantite_depot=%s, date_depot=%s, depot_id=%s,
-            categorie_vetement_id=%s, client_id=%s
+        SET quantite_depot=%s,
+            date_depot=%s,
+            depot_id=%s,
+            categorie_vetement_id=%s,
+            client_id=%s
         WHERE id_depose=%s
     ''', (
-        request.form.get('quantite_depot'),
-        request.form.get('date_depot'),
-        request.form.get('depot_id'),
-        request.form.get('categorie_vetement_id'),
-        request.form.get('client_id'),
-        request.form.get('id_depose')
+        request.form['quantite_depot'],
+        request.form['date_depot'],
+        request.form['depot_id'],
+        request.form['categorie_vetement_id'],
+        request.form['client_id'],
+        request.form['id_depose']
     ))
+
     get_db().commit()
     return redirect('/Depose/show')
 
+
+
+# ---------- DEL
 
 @app.route('/Depose/delete')
 def delete_depose():
@@ -563,11 +601,14 @@ def delete_depose():
     return redirect('/Depose/show')
 
 
+
+# ---------- STAT
+
 @app.route('/Depose/etat')
 def show_etat_depose():
     cursor = get_db().cursor()
     
-    # Total dépos
+    # Total dépo
     cursor.execute('''
         SELECT c.id_client, c.nom, c.prenom, SUM(d.quantite_depot) AS total_depose
         FROM DEPOSE d
@@ -577,7 +618,7 @@ def show_etat_depose():
     ''')
     total_depose_list = cursor.fetchall()
     
-    # Quantmoyenne 
+    # Moyenne 
     cursor.execute('''
         SELECT c.id_client, c.nom, c.prenom, ROUND(AVG(d.quantite_depot),2) AS moyenne_depot
         FROM DEPOSE d
@@ -595,9 +636,9 @@ def show_etat_depose():
 
 # ------------------- FIN DEPOSE -------------------
 
-
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
