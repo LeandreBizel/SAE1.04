@@ -9,10 +9,10 @@ import pymysql.cursors
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
-            host="192.168.1.124",                 # à modifier
-            user="user",                     # à modifier
+            host="serveurmysql",                 # à modifier
+            user="nlahurte",                     # à modifier
             password="secret",                   # à modifier
-            database="sae",        # à modifier
+            database="BDD_nlahurte_sae",        # à modifier
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
@@ -598,6 +598,7 @@ def show_etat_depose():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
