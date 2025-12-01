@@ -567,7 +567,7 @@ def delete_depose():
 def show_etat_depose():
     cursor = get_db().cursor()
     
-    # Total depot
+    # Total dépos
     cursor.execute('''
         SELECT c.id_client, c.nom, c.prenom, SUM(d.quantite_depot) AS total_depose
         FROM DEPOSE d
@@ -577,23 +577,28 @@ def show_etat_depose():
     ''')
     total_depose_list = cursor.fetchall()
     
-    # nbr de depit 
+    # Quantmoyenne 
     cursor.execute('''
-        SELECT c.id_client, c.nom, c.prenom, COUNT(d.id_depose) AS nb_depots
+        SELECT c.id_client, c.nom, c.prenom, ROUND(AVG(d.quantite_depot),2) AS moyenne_depot
         FROM DEPOSE d
         JOIN CLIENT c ON d.client_id = c.id_client
         GROUP BY c.id_client, c.nom, c.prenom
-        ORDER BY nb_depots DESC
+        ORDER BY moyenne_depot DESC
     ''')
-    nb_depots_list = cursor.fetchall()
+    moyenne_depot_list = cursor.fetchall()
     
-    return render_template('Tables/Depose_etat.html', total_depose_list=total_depose_list, nb_depots_list=nb_depots_list)
+    return render_template(
+        'Tables/Depose_etat.html',
+        total_depose_list=total_depose_list,
+        moyenne_depot_list=moyenne_depot_list
+    )
 
 # ------------------- FIN DEPOSE -------------------
 
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
