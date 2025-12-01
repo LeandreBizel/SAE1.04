@@ -15,8 +15,8 @@
     <form action="/Depose/add" method="POST">
 
         <div class="mb-3">
-            <label for="client_id" class="form-label">Client :</label>
-            <select name="client_id" class="form-select" required>
+            <label for="id_client" class="form-label">Client :</label>
+            <select name="id_client" id="id_client" class="form-select" required>
                 <option value="">Sélectionnez un client</option>
                 {% for c in clients %}
                 <option value="{{ c.id_client }}">
@@ -27,8 +27,8 @@
         </div>
 
         <div class="mb-3">
-            <label for="categorie_vetement_id" class="form-label">Catégorie du vêtement :</label>
-            <select name="categorie_vetement_id" class="form-select" required>
+            <label for="id_categorie_vetement" class="form-label">Catégorie du vêtement :</label>
+            <select name="id_categorie_vetement" id="id_categorie_vetement" class="form-select" required>
                 <option value="">Sélectionnez une catégorie</option>
                 {% for cat in categories %}
                 <option value="{{ cat.id_categorie_vetement }}">
@@ -39,8 +39,8 @@
         </div>
 
         <div class="mb-3">
-            <label for="depot_id" class="form-label">Dépôt :</label>
-            <select name="depot_id" class="form-select" required>
+            <label for="id_depot" class="form-label">Dépôt :</label>
+            <select name="id_depot" id="id_depot" class="form-select" required>
                 <option value="">Sélectionnez un dépôt</option>
                 {% for dep in depots %}
                 <option value="{{ dep.id_depot }}">
